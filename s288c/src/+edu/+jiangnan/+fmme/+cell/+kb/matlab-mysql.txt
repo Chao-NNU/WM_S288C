@@ -1,0 +1,46 @@
+conn =database('wholecell','root','sklf-fmme','com.mysql.jdbc.Driver','jdbc:mysql://127.0.0.1:3306/wholecell')
+
+%connect to the database
+
+%databasename='wholecell'
+
+%username='root'
+
+%password='sklf-fmme'
+
+%drive='com.mysql.jdbc.Driver'
+
+%URL='jdbc:mysql://127.0.0.1:3306/wholecell'
+
+curs = exec(conn, 'select * from public_metabolite')
+
+%lookiong for a table from the database
+
+curs =fetch(curs)
+
+%view the content in the table
+
+
+
+
+%利用MySQLDatabases288c程序连接数据库
+>> javaaddpath('D:\s288cdata\src\+edu\+jiangnan\+fmme\+db');
+
+>> import edu.jiangnan.fmme.db.MySQLDatabases288c;
+
+>> this = edu.jiangnan.fmme.db.MySQLDatabases288c('127.0.0.1:3306','wholecell','root','sklf-fmme')
+
+this = 
+
+  MySQLDatabases288c with properties:
+
+                 dbConn: [1x1 com.mysql.jdbc.JDBC4Connection]
+               hostName: '127.0.0.1:3306'
+                 schema: 'wholecell'
+               userName: 'root'
+               password: 'sklf-fmme'
+           sqlStatement: []
+    sqlStatementStreams: []
+                   data: []
+               errorMsg: []
+              nullValue: 0
