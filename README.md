@@ -2,7 +2,6 @@
 This package provides the S. cerevisiae whole-cell knowledge base and simulation, the actively developed repo is in Matlab at https://github.com/fmmelab/WM_S288C.
 
 Required software
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 (1) MATLAB R2009b (7.9) or newer is required for the whole-cell model software.
 
