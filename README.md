@@ -5,8 +5,7 @@ System requirements
 Installation guide
 %% Lesson 1: run simulation with default parameter values
 
-%1. Supress warnings, add whole-cell code to MATLAB path. These functions
-%   only need to called once at the beginning of each MATLAB session.
+%1. Supress warnings, add whole-cell code to MATLAB path. These functions only need to called once at the beginning of each MATLAB session.
 
 setWarnings();
 setPath();
@@ -15,8 +14,7 @@ runSimulation();
 
 %% Lesson 2: override parameter values using XML file and run simulation
 
-%1. Supress warnings, add whole-cell code to MATLAB path. These functions
-%   only need to called once at the beginning of each MATLAB session.
+%1. Supress warnings, add whole-cell code to MATLAB path. These functions only need to called once at the beginning of each MATLAB session.
 setWarnings();
 setPath();
 %2. Import classes
