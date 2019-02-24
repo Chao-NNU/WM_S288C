@@ -4,14 +4,17 @@ System requirements
 
 Installation guide
 %% Lesson 1: run simulation with default parameter values
+
 %1. Supress warnings, add whole-cell code to MATLAB path. These functions
 %   only need to called once at the beginning of each MATLAB session.
+
 setWarnings();
 setPath();
 %2. Run simulation
 runSimulation();
 
 %% Lesson 2: override parameter values using XML file and run simulation
+
 %1. Supress warnings, add whole-cell code to MATLAB path. These functions
 %   only need to called once at the beginning of each MATLAB session.
 setWarnings();
@@ -36,6 +39,7 @@ end
 runSimulation(simDir);
 
 %% Lesson 3: programmatically override parameter values and run simulation
+
 %import classes
 import edu.jiangnan.fmme.cell.sim.util.CachedSimulationObjectUtil;
 import edu.jiangnan.fmme.cell.sim.util.DiskLogger;
