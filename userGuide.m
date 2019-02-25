@@ -75,14 +75,14 @@ end
 %set parameter values
 sim.applyOptions('lengthSec', 100);
 
-parameterValues = struct();
-parameterValues.states = struct();
+parameterValues = struct();               
+parameterValues.states = struct(); 
 parameterValues.states.Mass = struct();
-parameterValues.states.Mass.cellInitialDryWeight = 4e-15;
-parameterValues.processes = struct();
-parameterValues.processes.Transcription = struct();
+parameterValues.states.Mass.cellInitialDryWeight = 9e-12; 
+parameterValues.processes = struct(); 
+parameterValues.processes.Transcription = struct(); 
 parameterValues.processes.Transcription.rnaPolymeraseElongationRate = 100;
-sim.applyParameters(parameterValues);
+simulation.applyParameters(parameterValues);
 
 %verify that parameter values correctly set
 sim.getParameters().states.Mass.cellInitialDryWeight
@@ -96,16 +96,16 @@ diskLogger = DiskLogger(simDir, 10); %save complete dynamics to disk
 diskLogger.addMetadata(...
     'shortDescription',         'test simulation', ...
     'longDescription',          'test simulation', ...
-    'email',                    'jkarr@stanford.edu', ...
-    'firstName',                'Jonathan', ...
-    'lastName',                 'Karr', ...
-    'affiliation',              'Stanford University', ...
-    'knowledgeBaseWID',         kbWID, ...
-    'revision',                 1, ...
-    'differencesFromRevision',  [], ...
-    'userName',                 'jkarr', ...
-    'hostName',                 'hostname.stanford.edu', ...
-    'ipAddress',                '10.0.0.0');
+	'email', 'ziye0911@gmail.com',...
+	'firstName', 'Chao',...
+	'lastName', 'Ye',...
+	'affiliation', 'Jiangnan University',...
+	'knowledgeBaseWID', knowledgeBaseWID,...
+	'revision', 1,...
+	'differencesFromRevision',[],...
+	'userName','root',...
+	'hostName','127.0.0.1',...
+	'ipAddress','127.0.0.1');
 
 loggers = {summaryLogger; diskLogger};
 
@@ -118,9 +118,9 @@ log = load([simDir filesep 'summary.mat']);
 
 %plot data
 subplot(2, 2, 1);
-plot(log.time, log.mass * 1e15);
+plot(log.time, log.mass * 1e12);
 xlabel('Time (s)');
-ylabel('Mass (fg)');
+ylabel('Mass (pg)');
 
 subplot(2, 2, 2);
 plot(log.time, log.ploidy);
@@ -167,8 +167,8 @@ states = SimulationEnsemble.load(simBatchDir, stateNames, [], [], 1, 'extract', 
 
 %plot
 subplot(5, 1, 1);
-plot(permute(states.Time.values, [1 3 2]), permute(sum(states.Mass.cell, 2), [1 3 2]) * 1e15);
-ylabel('Mass (fg)');
+plot(permute(states.Time.values, [1 3 2]), permute(sum(states.Mass.cell, 2), [1 3 2]) * 1e12);
+ylabel('Mass (pg)');
 
 subplot(5, 1, 2);
 plot(permute(states.Time.values, [1 3 2]), permute(states.MetabolicReaction.fluxs(fluxIdx, :, :), [1 3 2]) * 1e-3);
