@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# WM_S288C for the construction of S. cerevisiae whole-cell model
-This package provides the S. cerevisiae whole-cell knowledge base and simulation, the actively developed repo is in Python at https://github.com/fmmelab/WM_S288C.
-=======
 # WM_S288C: whole-cell model for S. cerevisiae
 This package provides the S. cerevisiae whole-cell knowledge base and simulation, the actively developed repo is in Matlab at https://github.com/fmmelab/WM_S288C.
 
@@ -34,4 +30,3 @@ Please see the file of userGuide.m for detailed information.
 Instructions for use
 
 Please see the file of userGuide.m for detailed information.
->>>>>>> 6d0b7b172d6ec7bb44234a705cb12ee84c9a6cf1
