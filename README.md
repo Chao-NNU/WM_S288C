@@ -9,10 +9,12 @@ Required software
 
 Installation guide
 
-(1) Building of local mysql database
+(1) Building of local mysql database:
+
 After install the XAMPP software, s288c.sql, which contains the whole data used for construction of S. cerevisiae whole-cell model, should be imported.
 
-(2) Configing the whole-cell toolbox
+(2) Configing the whole-cell toolbox:
+
 First， the whole-cell toolbox should be added to the path of MATLAB,
 
 Then, in MATLAB, change the path to the root directory of this toolbox,
