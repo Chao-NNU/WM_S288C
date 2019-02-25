@@ -9,7 +9,11 @@ Required software
 
 Installation guide
 
+First， the whole-cell toolbox should be added to the path of MATLAB,
 
+Then, in MATLAB, change the path to the root directory of this toolbox,
+
+Last, run install.m and follow the instructions on screen.
 
 
 Demo
