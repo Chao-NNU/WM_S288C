@@ -24,5 +24,9 @@ Last, run install.m and follow the instructions on screen.
 
 Demo
 
+Please see the file of userGuide.m for detailed information.
+
 
 Instructions for use
+
+Please see the file of userGuide.m for detailed information.
