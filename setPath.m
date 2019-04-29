@@ -42,7 +42,6 @@ if isempty(which('mxlpsolve'))                                  %lp_solve       
 end
 
 %source code
-setPathHelper('edu.jiangnan.fmme.cell.sim.Simulation_Test', 'src_test');  %whole cell test classes
 setPathHelper('edu.jiangnan.fmme.cell.sim.Simulation',      'src');       %whole cell classes
 addpath(pwd);
 

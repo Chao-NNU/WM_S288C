@@ -54,13 +54,12 @@ this.state('Mass').initializeConstants(knowledgeBase, this);
 this.state('Geometry').initializeConstants(knowledgeBase, this);
 this.state('Stimulus').initializeConstants(knowledgeBase, this);
 this.state('Metabolite').initializeConstants(knowledgeBase, this);
-%this.state('Rna').initializeConstants(knowledgeBase, this);
+this.state('Rna').initializeConstants(knowledgeBase, this);
 this.state('ProteinMonomer').initializeConstants(knowledgeBase, this);
 this.state('ProteinComplex').initializeConstants(knowledgeBase, this);
 
 states = this.states;
 for i = 1:numel(states)
-i
 	if i ~= 11
     states{i}.initializeConstants(knowledgeBase, this);
 	end
@@ -69,6 +68,5 @@ end
 %% Processes
 processes = this.processes;
 for i = 1:length(processes)
-	i
     processes{i}.initializeConstants(knowledgeBase, this);
 end
