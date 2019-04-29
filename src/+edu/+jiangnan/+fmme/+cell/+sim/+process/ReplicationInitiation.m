@@ -434,12 +434,11 @@ classdef ReplicationInitiation < edu.jiangnan.fmme.cell.sim.Process & edu.jiangn
 				
 				tfs17{i} = this.bindProteinToChromosome(i, positionsStrands_17mer{i}, this.enzymeIndexs_ORC_1mer_ATP, nonOriCDnaAATP_17mer{i}, [], true, false, 1, false, [], true);
 				tfs33{i} = this.bindProteinToChromosome(i, positionsStrands_33mer{i}, this.enzymeIndexs_ORC_1mer_ATP, nonOriCDnaAATP_33mer{i}, [], true, false, 1, false, [], true);
-				%{
+				
 				if 	sum(tfs33{i}) ~= nonOriCDnaAATP_33mer{i} || sum(tfs17{i}) ~= nonOriCDnaAATP_17mer{i}				
 					%throw(MException('ReplicationInitiation:error', 'DnaA-ATP should be bound to 33- and 17-mer sites'));
 					warning('DnaA-ATP should be bound to 33- and 17-mer sites');
-				end
-				%}		
+				end	
 			end
         end
         

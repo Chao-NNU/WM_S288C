@@ -771,7 +771,7 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
             this.fbaReactionIndexs_biomassExchange = find(ismember(rxnIdxs_fba, rxnIdxs_biomassExchange));
 			save('data/fba1.mat','fbaSMat'); 
             fbaSMat = fbaSMat(subCmpIdxs_fba, rxnIdxs_fba);
-			save('data/fba2.mat','subCmpIdxs_fba','rxnIdxs_fba');
+			save('data/fba.mat','subCmpIdxs_fba','rxnIdxs_fba');
             fbaCatMat = fbaCatMat(rxnIdxs_fba, :);
             fbaRHS = fbaRHS(subCmpIdxs_fba, :);
             fbaRxnBnds = fbaRxnBnds(rxnIdxs_fba, :);
@@ -846,7 +846,6 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
             
             loIdxs = find(enzymes < minAvgExp & any(this.fbaReactionCatalysisMatrix, 1)');
             hiIdxs = find(enzymes > minAvgExp);
-			
             if (minAvgExp(loIdxs)-enzymes(loIdxs))' * enzMWs(loIdxs) < (enzymes(hiIdxs) - minAvgExp(hiIdxs))' * enzMWs(hiIdxs)
                 enzymes(hiIdxs) = minAvgExp(hiIdxs) + (enzymes(hiIdxs) - minAvgExp(hiIdxs)) * ...
                     ((enzymes(hiIdxs)-minAvgExp(hiIdxs))' * enzMWs(hiIdxs) - ...
@@ -858,7 +857,7 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
             end
             
             initEnzymes = enzymes;
-
+            
             % calculate current growth and fluxes
             [fbaObj, fbaSMat, fbaRxnBounds] = this.calcEffectiveFBANetwork();
 			
@@ -869,8 +868,6 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
             if abs(growth - growth0) / growth0 < this.tolerance || abs(growth - growth0) < 1e-12
                 return;
             end
-			
-			%keyboard
 			
             if growth < growth0 && growth0 > this.calcGrowthRate(this.calcFluxBounds(...
                     substrates, enzymes, fbaRxnBounds, this.fbaEnzymeBounds, false), fbaObj, fbaSMat)
@@ -907,8 +904,7 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
                 objective = 'maximize';
             end
 			
-            %loFluxBounds(this.fbaReactionIndexs_biomassProduction) = growth0;
-			loFluxBounds(this.fbaReactionIndexs_biomassProduction) = 0;
+            loFluxBounds(this.fbaReactionIndexs_biomassProduction) = growth0;
             upFluxBounds(this.fbaReactionIndexs_biomassProduction) = growth0;
             
             loFluxBounds = max(loFluxBounds, -this.realmax);
@@ -918,7 +914,9 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
                 objective, objectiveFunc, fbaSMat, ...
                 this.fbaRightHandSide, loFluxBounds, upFluxBounds, ...
                 'S', 'C', this.linearProgrammingOptions);
+
 			%keyboard
+				
 			if errFlag
                 throw(MException('Metabolism:error', 'Unable to optimize fluxes: %s', errMsg));
             end
@@ -952,14 +950,16 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
                     (enzymes(decEnzymes) - initEnzymes(decEnzymes))' * enzMWs(decEnzymes)) / ...
                     ((initEnzymes(incEnzymes) - minAvgExp(incEnzymes))' * enzMWs(incEnzymes));
             end
-			
+			%keyboard
             %check growth rate fit
             if abs(this.calcGrowthRate(this.calcFluxBounds(...
                     substrates, enzymes, fbaRxnBounds, this.fbaEnzymeBounds), fbaObj, fbaSMat) ...
-                    - growth0) / growth0 > 0.05%this.tolerance
+                    - growth0) / growth0 > this.tolerance
                 %throw(MException('Metabolism:error', 'Growth rate should not change'));
 				warning('Growth rate should not change');
             end
+			
+			%keyboard
 			
             if abs((enzymes' * enzMWs - initEnzymes' * enzMWs) / (initEnzymes' * enzMWs)) > this.tolerance
                 throw(MException('Metabolism:error', 'Protein mass should not change'));
@@ -1219,11 +1219,11 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
         %initialization
         %- Compute growth rate, reaction fluxs, reduced costs, duals
         %- Don't update metabolite counts
-        function initializeState(this)
+        function initializeState(this)			
             [this.metabolicReaction.growth, this.metabolicReaction.fluxs] = ...
                 this.calcGrowthRate(this.calcFluxBounds(this.substrates, this.enzymes, this.fbaReactionBounds, this.fbaEnzymeBounds));
 			this.metabolicReaction.growth
-        	%keyboard
+			%keyboard
 		end
         
         %resource requirements
@@ -1234,7 +1234,7 @@ classdef  Metabolism < edu.jiangnan.fmme.cell.sim.ReactionProcess
             result = ...
                 + result ...
                 - this.metabolismRecyclingProduction * 2 * max(...
-                    sum(this.mass.cellDry) / this.mass.cellInitialDryWeight * log(1.111) / this.cellCycleLength, ...
+                    sum(this.mass.cellDry) / this.mass.cellInitialDryWeight * log(2) / this.cellCycleLength, ...
                     this.metabolicReaction.growth);
         end
         

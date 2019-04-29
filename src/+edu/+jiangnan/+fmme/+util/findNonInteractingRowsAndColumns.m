@@ -48,6 +48,7 @@ for i=1:size(A,1)
     [rowAssignments,colAssignments]=assignRecursively_row(A,i,nBlocks,rowAssignments,colAssignments);
 end
 
+
 for i=1:size(A,2)
     if(colAssignments(i)~=0); continue; end;
     nBlocks=nBlocks+1;

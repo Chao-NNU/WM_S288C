@@ -83,7 +83,6 @@ classdef TranscriptionUnit < edu.jiangnan.fmme.cell.kb.ssRNA
     
     methods
         function this = TranscriptionUnit(knowledgeBase, wid,wholeCellModelID,name,...
-				fivePrimeCoordinate, threePrimeCoordinate,...
                 CCAATCoordinate, CCAATLength, ...
                 TATACoordinate, TATALength, ...
                 GCCoordinate, GCLength, ...
@@ -114,16 +113,18 @@ classdef TranscriptionUnit < edu.jiangnan.fmme.cell.kb.ssRNA
                     end
                 end
                 
-                this(i,1).fivePrimeCoordinate   = fivePrimeCoordinate(i);
-                this(i,1).threePrimeCoordinate  = threePrimeCoordinate(i);
-                this(i,1).CCAATCoordinate       = CCAATCoordinate(i);
-                this(i,1).CCAATLength           = CCAATLength(i);
-                this(i,1).TATACoordinate        = TATACoordinate(i);
-                this(i,1).TATALength            = TATALength(i);
-                this(i,1).GCCoordinate          = GCCoordinate(i);
-                this(i,1).GCLength              = GCLength(i);
-                this(i,1).tssCoordinate         = tssCoordinate(i);
-				this(i,1).dnaSequence           = dnaSequence{i};
+                %this(i,1).promoter35Coordinate = promoter35Coordinate(i);
+                %this(i,1).promoter35Length     = promoter35Length(i);
+                %this(i,1).promoter10Coordinate = promoter10Coordinate(i);
+                %this(i,1).promoter10Length     = promoter10Length(i);
+                this(i,1).CCAATCoordinate      = CCAATCoordinate(i);
+                this(i,1).CCAATLength          = CCAATLength(i);
+                this(i,1).TATACoordinate       = TATACoordinate(i);
+                this(i,1).TATALength           = TATALength(i);
+                this(i,1).GCCoordinate         = GCCoordinate(i);
+                this(i,1).GCLength             = GCLength(i);
+                this(i,1).tssCoordinate        = tssCoordinate(i);
+				this(i,1).dnaSequence          = dnaSequence{i};
             end
         end
         

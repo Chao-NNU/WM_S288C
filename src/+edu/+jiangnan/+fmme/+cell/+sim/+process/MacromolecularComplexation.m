@@ -134,7 +134,6 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
     methods
         %initialize constants
         function initializeConstants(this, knowledgeBase, simulation, varargin)
-			
             %subunits
             this.substrateWholeCellModelIDs = cell(knowledgeBase.numGenes,1);
             this.substrateWholeCellModelIDs(this.gene.mRNAIndexs) = this.monomer.wholeCellModelIDs(this.monomer.matureIndexs);
@@ -152,18 +151,20 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
                 [numel(this.complex.wholeCellModelIDs) numel(this.compartment.wholeCellModelIDs)], ...
                 this.complexGlobalIndexs, ...
                 this.complexCompartmentIndexs);
+
             this.complexWholeCellModelIDs = this.complex.wholeCellModelIDs(this.complexGlobalIndexs);
+
             this.complexComposition = sum(...
                 knowledgeBase.proteinComplexRNAComposition(:, complexIdxs, :) + ...
                 knowledgeBase.proteinComplexMonomerComposition(:, complexIdxs, :), 3);
-			
+
             %1. Reshape monomer-complex network: [monomers-Compartment-1 x Complexs; monomers-Compartment-2 x Complexs; ... ; monomers-Compartment-n x Complexs]
             %   a. permute dimensions
             %   b. reshape
             %   c. transpose
             %2. Ignore complexes formed by other processes
             %3. Break monomer-complex network up into disjoint sets and build complexes for each set
-		   this.initializeComplexNetworks();
+            this.initializeComplexNetworks();
             
             %call super class method to compute substrate mapping onto
             %simulation and get substrate molecular weights
@@ -171,10 +172,9 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
         end
         
         function initializeComplexNetworks(this)
-			
             [substrates2complexNetworks, complexs2complexNetworks, complexNetworks] = ...
                 edu.jiangnan.fmme.util.findNonInteractingRowsAndColumns(this.complexComposition); %#ok<*PROP>
-			
+            
             this.substrates2complexNetworks = zeros(size(substrates2complexNetworks));
             this.complexs2complexNetworks = zeros(size(complexs2complexNetworks));
             this.complexNetworks = cell(1, 1);
@@ -186,14 +186,16 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
                     this.complexs2complexNetworks(complexs2complexNetworks == i) = 1;
                 else
                     j = j + 1;
+                    
                     this.substrates2complexNetworks(substrates2complexNetworks == i) = j;
                     this.complexs2complexNetworks(complexs2complexNetworks == i) = j;
                     this.complexNetworks{j, 1} = complexNetworks{i};
                 end
             end
-			
             this.complexNetworks{1} = this.complexComposition(this.substrates2complexNetworks == 1, this.complexs2complexNetworks == 1);
+            
             this.substrateWholeCellModelIDs = this.substrateWholeCellModelIDs(this.substrates2complexNetworks > 0);
+            
             this.complexWholeCellModelIDs = this.complexWholeCellModelIDs(this.complexs2complexNetworks > 0);
             this.complexGlobalIndexs = this.complexGlobalIndexs(this.complexs2complexNetworks > 0);
             this.complexCompartmentIndexs = this.complexCompartmentIndexs(this.complexs2complexNetworks > 0);
@@ -225,9 +227,10 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
         %send state to simulation
         function copyToState(this)
             this.copyToState@edu.jiangnan.fmme.cell.sim.Process();
-			
+
             %complexs
             numTime = size(this.complexs, 3);
+            
             if numTime == 1
                 this.complex.counts(this.complexGlobalCompartmentIndexs) = this.complexs;
             else
@@ -286,12 +289,12 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
         %simulation
         function evolveState(this)
             newComplexs = zeros(size(this.complexs));
-
+            
             %subunits only involved in one complex (i.e. no competition)
             newComplexs(this.complexs2complexNetworks == 1) = buildProteinComplexs_bounds(...
                 this.substrates(this.substrates2complexNetworks == 1, 1),...
                 this.complexNetworks{1});
-				
+            
             %subunits involved in multiple complexes (i.e. competition): Run
             %Monte Carlo simulation for each independent protein complex network
             for i = 2:length(this.complexNetworks)
@@ -300,11 +303,13 @@ classdef  MacromolecularComplexation < edu.jiangnan.fmme.cell.sim.Process
                     this.substrates(this.substrates2complexNetworks == i), ...
                     this.complexNetworks{i}, this.randStream);
             end
+            
 			
             %stop if no new complexes
             if ~any(newComplexs)
                 return;
             end
+			
             this.complexs = this.complexs + newComplexs;
             this.substrates = this.substrates - this.complexComposition * newComplexs;
         end

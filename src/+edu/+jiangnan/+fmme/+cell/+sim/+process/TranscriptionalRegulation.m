@@ -129,12 +129,6 @@ classdef TranscriptionalRegulation < edu.jiangnan.fmme.cell.sim.Process & edu.ji
         substrateWholeCellModelIDs = {};
 
         enzymeWholeCellModelIDs
-        %enzymeIndexs_fur         %MG_236_MONOMER  ferric uptake repressor
-        %enzymeIndexs_gntR        %MG_101_MONOMER  Uncharacterized HTH-type transcriptional regulator
-        %enzymeIndexs_hrcA        %MG_205_DIMER    heat-inducible transcription repressor HrcA, putative
-        %enzymeIndexs_luxR        %MG_428_DIMER    LuxR bacterial regulatory protein, putative
-        %enzymeIndexs_spx         %MG_127_MONOMER  Spx subfamily protein
-		
 		enzymeIndexs_HSF1		  	%YGL073W_MONOMER
 		enzymeIndexs_ABF1			%YKL112W_MONOMER	
 		enzymeIndexs_RAP1			%YNL216W_MONOMER
@@ -151,7 +145,6 @@ classdef TranscriptionalRegulation < edu.jiangnan.fmme.cell.sim.Process & edu.ji
 		enzymeIndexs_LEU3			%YLR451W_MONOMER
 		enzymeIndexs_STE12			%YHR084W_MONOMER
 		enzymeIndexs_CBF1			%YJR060W_MONOMER
-		%enzymeIndexs_SWI6			%YLR182W_MONOMER
 		enzymeIndexs_SWI5			%YDR146C_MONOMER
 		enzymeIndexs_FKH2			%YNL068C_MONOMER
 		enzymeIndexs_ADR1			%YDR216W_MONOMER
@@ -246,11 +239,11 @@ classdef TranscriptionalRegulation < edu.jiangnan.fmme.cell.sim.Process & edu.ji
                     complex = [complex; co]; %#ok<AGROW>
                 end
             end
+			
             %whole cell model ids of all transcription factors
             this.enzymeWholeCellModelIDs = unique({
                 monomer.wholeCellModelID...
                 complex.wholeCellModelID}');				
-
 
             %transcription factors indices
 			
@@ -270,7 +263,6 @@ classdef TranscriptionalRegulation < edu.jiangnan.fmme.cell.sim.Process & edu.ji
 			this.enzymeIndexs_LEU3  = this.enzymeIndexs({'YLR451W_MONOMER'});
 			this.enzymeIndexs_STE12  = this.enzymeIndexs({'YHR084W_MONOMER'});
 			this.enzymeIndexs_CBF1  = this.enzymeIndexs({'YJR060W_MONOMER'});
-			%this.enzymeIndexs_SWI6  = this.enzymeIndexs({'YLR182W_MONOMER'});
 			this.enzymeIndexs_SWI5  = this.enzymeIndexs({'YDR146C_MONOMER'});
 			this.enzymeIndexs_FKH2  = this.enzymeIndexs({'YNL068C_MONOMER'});
 			this.enzymeIndexs_ADR1  = this.enzymeIndexs({'YDR216W_MONOMER'});

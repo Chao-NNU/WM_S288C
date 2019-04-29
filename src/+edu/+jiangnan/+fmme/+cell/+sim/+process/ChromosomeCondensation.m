@@ -207,7 +207,7 @@ classdef ChromosomeCondensation < edu.jiangnan.fmme.cell.sim.Process & edu.jiang
 			
 			for i = 1:16
 			nATP(i) = 0.2 * nCohesins * this.enzymeDNAFootprints(this.enzymeIndexs_Cohesin_ADP) / this.chromosome.sequenceLen(i) * ...
-                sum(states.complexs0(this.complex.rnaPolymeraseIndexs)) * constants.states.Time.cellCycleLength / log(1.111);
+                sum(states.complexs0(this.complex.rnaPolymeraseIndexs)) * constants.states.Time.cellCycleLength / log(2);
 			end
 			nATP=sum(nATP);
 			

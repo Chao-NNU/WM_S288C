@@ -5,7 +5,7 @@
 % Last updated: 5/7/2009
 classdef Reaction < edu.jiangnan.fmme.cell.kb.KnowledgeBaseObject
     properties
-        process                             = edu.jiangnan.fmme.cell.kb.Process.empty(0,0);
+        processes                          = edu.jiangnan.fmme.cell.kb.Process.empty(0,0);
         state                              = edu.jiangnan.fmme.cell.kb.State.empty(0,0);
 
         stimulis                           = edu.jiangnan.fmme.cell.kb.Stimuli.empty(0,0);
@@ -133,7 +133,7 @@ classdef Reaction < edu.jiangnan.fmme.cell.kb.KnowledgeBaseObject
 
         function serializeLinks(this)
             for i = 1:numel(this)
-                this(i).process                            = this.serializeLinksHelper(this(i).process);
+                this(i).processes                          = this.serializeLinksHelper(this(i).processes);
                 this(i).state                              = this.serializeLinksHelper(this(i).state);
 
                 this(i).stimulis                           = this.serializeLinksHelper(this(i).stimulis);
@@ -177,7 +177,7 @@ classdef Reaction < edu.jiangnan.fmme.cell.kb.KnowledgeBaseObject
         
         function deserializeLinks(this, kb)
             for i = 1:numel(this)
-                this(i).process                            = this.deserializeLinksHelper(this(i).process, kb.processes);
+                this(i).processes                          = this.deserializeLinksHelper(this(i).processes, kb.processes);
                 this(i).state                              = this.deserializeLinksHelper(this(i).state, kb.states);
 
                 this(i).stimulis                           = this.deserializeLinksHelper(this(i).stimulis, kb.stimulis);

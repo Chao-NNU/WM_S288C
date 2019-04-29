@@ -901,7 +901,7 @@ classdef SummaryLogger < edu.jiangnan.fmme.cell.sim.util.Logger
                         simStats(j, SummaryLogger.SIM_STATUS_INDEX_FIN_GROWTH) = summary.growth(idx);
                         simStats(j, SummaryLogger.SIM_STATUS_INDEX_CUM_GROWTH) = diff(summary.time(1:2)) * sum(summary.growth(1:idx));
                     else
-                        f = (2 - 1) / (exp(log(1.111) * summary.time(end) / cellCycleLength) - 1); %#ok<CPROP,PROP>
+                        f = (2 - 1) / (exp(log(2) * summary.time(end) / cellCycleLength) - 1); %#ok<CPROP,PROP>
                         simStats(j, SummaryLogger.SIM_STATUS_INDEX_FIN_GROWTH) = f * summary.growth(end);
                         simStats(j, SummaryLogger.SIM_STATUS_INDEX_CUM_GROWTH) = f * diff(summary.time(1:2)) * sum(summary.growth);
                     end
@@ -911,7 +911,7 @@ classdef SummaryLogger < edu.jiangnan.fmme.cell.sim.util.Logger
                         simStats(j, SummaryLogger.SIM_STATUS_INDEX_MASS_DOUBLING_TIME) = summary.time(idx-1);
                     else
                         simStats(j, SummaryLogger.SIM_STATUS_INDEX_MASS_DOUBLING_TIME) = ...
-                            cellCycleLength / log(1.111) * log(1.111 / summary.mass(end)) + summary.time(end); %#ok<CPROP,PROP>
+                            cellCycleLength / log(2) * log(2 / summary.mass(end)) + summary.time(end); %#ok<CPROP,PROP>
                     end
                     
                     simStats(j, SummaryLogger.SIM_STATUS_INDEX_FIN_MASS) = summary.mass(end);

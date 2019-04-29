@@ -7,6 +7,6 @@ function dbConnectionParameters = config()
 
 % knowledgebase
 dbConnectionParameters.hostName = '127.0.0.1';
-dbConnectionParameters.schema   = 's288c1109';
+dbConnectionParameters.schema   = 's288c_test';
 dbConnectionParameters.userName = 'root';
 dbConnectionParameters.password = '';

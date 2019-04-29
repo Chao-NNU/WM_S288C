@@ -96,20 +96,20 @@ classdef ReactionProcess < edu.jiangnan.fmme.cell.sim.Process
             this.reactionCoenzymeMatrix           = knowledgeBase.reactionCoenzymeMatrix(reactionGlobalIndexs, :, :);
             this.enzymeBounds                     = knowledgeBase.enzymeBounds(reactionGlobalIndexs, :);
             this.reactionBounds                   = knowledgeBase.reactionBounds(reactionGlobalIndexs, :);
-			
+
             reactionStimuliStoichiometryMatrix    = knowledgeBase.reactionStimuliStoichiometryMatrix(:, reactionGlobalIndexs, :);
             reactionMetaboliteStoichiometryMatrix = knowledgeBase.reactionMetaboliteStoichiometryMatrix(:, reactionGlobalIndexs, :);
             reactionRNAStoichiometryMatrix        = knowledgeBase.reactionRNAStoichiometryMatrix(:, reactionGlobalIndexs, :);
             reactionMonomerStoichiometryMatrix    = knowledgeBase.reactionProteinMonomerStoichiometryMatrix(:, reactionGlobalIndexs, :);
             reactionComplexStoichiometryMatrix    = knowledgeBase.reactionProteinComplexStoichiometryMatrix(:, reactionGlobalIndexs, :);
-			
+
             %substrates
             stimuliIndexs    = find(sum(sum(abs(reactionStimuliStoichiometryMatrix), 3), 2));
             metaboliteIndexs = find(sum(sum(abs(reactionMetaboliteStoichiometryMatrix), 3), 2) | sum(sum(abs(this.reactionCoenzymeMatrix), 3), 1)');
             rnaIndexs        = find(sum(sum(abs(reactionRNAStoichiometryMatrix), 3), 2));
             monomerIndexs    = find(sum(sum(abs(reactionMonomerStoichiometryMatrix), 3), 2));
             complexIndexs    = find(sum(sum(abs(reactionComplexStoichiometryMatrix), 3), 2));
-			
+
             this.substrateWholeCellModelIDs = [
                 this.stimulus.wholeCellModelIDs(stimuliIndexs);
                 this.metabolite.wholeCellModelIDs(metaboliteIndexs);

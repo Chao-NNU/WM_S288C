@@ -97,7 +97,7 @@ classdef  ProteinModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
         substrateIndexs_modifiedAminoAcids  %indices of modified amino acids within substrates
         substrateIndexs_atp                 %index of ATP within substrates
         substrateIndexs_adp                 %index of ADP within substrates
-        %substrateIndexs_amp                 %index of AMP within substrates
+        substrateIndexs_amp                 %index of AMP within substrates
 		substrateIndexs_accoa				%index of ACCOA within substrates
 		substrateIndexs_coa		     		%index of COA within substrates
 		
@@ -105,8 +105,9 @@ classdef  ProteinModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
         substrateIndexs_hydrogen            	%index of H within substrates
         %substrateIndexs_phosphate           	%index of Pi within substrates
         %substrateIndexs_glutamate           	%index of glutamate within substrates
-        %%substrateIndexs_lipoylAmp           	%index of lipoyl AMP within substrates
-        %%substrateIndexs_lipoylLys           	%index of lipoyl Lysine within substrates
+        substrateIndexs_lipoylAmp           	%index of lipoyl AMP within substrates
+		%substrateIndexs_lipoate             	%index of lipoic acid within substrates
+        substrateIndexs_lipoylLys           	%index of lipoyl Lysine within substrates   
 		substrateIndexs_pmtcoa					%index of palmityl-coa within substrates
 		substrateIndexs_pamtCys					%index of S-palmitoyl Cysteine within substrates
         
@@ -117,7 +118,7 @@ classdef  ProteinModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
 		enzymeIndexs_nalphaacetyltransferase	%index of N-alpha acetyltransferase within enzymes
 		
 		enzymeIndexs_palmitoyltransferase		%index of palmitoyltransferase within enzymes		
-        %%enzymeIndexs_lipoylTransferase          %index of lipoyl transferase within enzymes
+        enzymeIndexs_lipoylTransferase          %index of lipoyl transferase within enzymes
         %enzymeIndexs_glutamateLigase        	%index of glutamate ligase within enzymes
         
         reactionIndexs_adduction            	%indices of adduction reactions within reactionWholeCellModelIDs
@@ -162,18 +163,18 @@ classdef  ProteinModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
             
             %% metabolite indices
 			this.substrateIndexs_aminoAcids         = this.substrateIndexs({'ALA_L'; 'CYS_L'; 'MET_L';'LYS_L'; 'SER_L'; 'THR_L'; 'TYR_L';});
-			%this.substrateIndexs_modifiedAminoAcids = this.substrateIndexs({'LIPOYLLYS'; 'PAMTCYS'; 'PSER'; 'PTHR'; 'PTYR'; 'ACALA'; 'ACLYS'; 'ACMET'; 'ACSER'; 'ACTHR';});
-			this.substrateIndexs_modifiedAminoAcids = this.substrateIndexs({'PAMTCYS'; 'PSER'; 'PTHR'; 'PTYR'; 'ACALA'; 'ACLYS'; 'ACMET'; 'ACSER'; 'ACTHR';});
+			this.substrateIndexs_modifiedAminoAcids = this.substrateIndexs({'LIPOYLLYS'; 'PAMTCYS'; 'PSER'; 'PTHR'; 'PTYR'; 'ACALA'; 'ACLYS'; 'ACMET'; 'ACSER'; 'ACTHR';});
             this.substrateIndexs_atp                = this.substrateIndexs({'ATP'});
             this.substrateIndexs_adp                = this.substrateIndexs({'ADP'});
-            %this.substrateIndexs_amp                = this.substrateIndexs({'AMP'});
+            this.substrateIndexs_amp                = this.substrateIndexs({'AMP'});
 			this.substrateIndexs_accoa              = this.substrateIndexs({'ACCOA'});
 			this.substrateIndexs_coa                = this.substrateIndexs({'COA'});			
             this.substrateIndexs_hydrogen           = this.substrateIndexs({'H'});
-            %this.substrateIndexs_phosphate          = this.substrateIndexs({'PI'});
-            %this.substrateIndexs_glutamate          = this.substrateIndexs({'GLU_L'});
-            %%this.substrateIndexs_lipoylAmp          = this.substrateIndexs({'LIPOYLAMP'});
-            %%this.substrateIndexs_lipoylLys          = this.substrateIndexs({'LIPOYLLYS'});
+            %this.substrateIndexs_phosphate         = this.substrateIndexs({'PI'});
+            %this.substrateIndexs_glutamate         = this.substrateIndexs({'GLU_L'});
+            this.substrateIndexs_lipoylAmp          = this.substrateIndexs({'LIPOYLAMP'});
+			%this.substrateIndexs_lipoate           = this.substrateIndexs({'LIPOATE'});
+            this.substrateIndexs_lipoylLys          = this.substrateIndexs({'LIPOYLLYS'});
 			this.substrateIndexs_pmtcoa             = this.substrateIndexs({'PMTCOA'});
 			this.substrateIndexs_pamtCys            = this.substrateIndexs({'PAMTCYS'});
             
@@ -188,7 +189,7 @@ classdef  ProteinModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
 			this.enzymeIndexs_nalphaacetyltransferase       =	this.enzymeIndexs({'YEL053C_YPR051W_YCR020C-A_TRIMER'});
 			this.enzymeIndexs_palmitoyltransferase 	        =	this.enzymeIndexs({'YOL003C_MONOMER'; 'YDR264C_MONOMER';...
 						 'YDR126W_MONOMER'; 'YLR246W_MONOMER'; 'YNL326C_MONOMER'});	  
-			%%this.enzymeIndexs_lipoylTransferase      		= this.enzymeIndexs({'YJL046W_MONOMER'});
+			this.enzymeIndexs_lipoylTransferase      		= this.enzymeIndexs({'YJL046W_MONOMER'});
             %this.enzymeIndexs_glutamateLigase        = this.enzymeIndexs({'MG_012_MONOMER'});
             
             %% protein monomers

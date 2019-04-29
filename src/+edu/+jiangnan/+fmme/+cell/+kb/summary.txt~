@@ -1,0 +1,170 @@
+javaaddpath('/home/export/base/nsccwuxi_jd/liulm/online1/Model/R2015b/mysql-connector-java-5.1.41-bin.jar');
+javaaddpath('/home/fmme/GSMM/wholecelldata/s288cdata/src/+edu/+jiangnan/+fmme/+db');
+import edu.jiangnan.fmme.db.MySQLDatabase;
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM summary';
+this.prepareStatement(sql);
+datasummary = this.query();
+
+knowledgeBase.version=datasummary.Version(1);
+knowledgeBase.investigator=datasummary.Investigator{1};
+knowledgeBase.taxonomy=datasummary.Taxonomy{1};
+knowledgeBase.translationTable=datasummary.TranslationTable{1};
+knowledgeBase.maxAvgMetConc=datasummary.MaxAvgMetConc;
+knowledgeBase.maxAvgRxnFlux=datasummary.MaxAvgRxnFlux;
+knowledgeBase.wid=1;
+knowledgeBase.wholeCellModelID=datasummary.WholeCellModelID{1};
+knowledgeBase.name=datasummary.Name{1};
+
+
+
+
+import edu.jiangnan.fmme.db.MySQLDatabase;
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+database.prepareStatement('SELECT * FROM summary');
+data = database.query();
+
+KnowledgeBase.wid=data.WID;
+KnowledgeBase.idx=1;
+KnowledgeBase.wholeCellModelID = data.WholeCellModelID{1};
+KnowledgeBase.version = data.Version(1);
+KnowledgeBase.investigator = data.Investigator{1};
+KnowledgeBase.name = data.Name{1};
+KnowledgeBase.taxonomy = data.Taxonomy{1};
+KnowledgeBase.translationTable = data.TranslationTable;
+KnowledgeBase.maxAvgMetConc = data.MaxAvgMetConc;
+KnowledgeBase.maxAvgRxnFlux = data.MaxAvgRxnFlux;
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM processes';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.processes = edu.jiangnan.fmme.cell.kb.Process(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.InitializationOrder, data.EvaluationOrder, data.Class);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM states';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.states = edu.jiangnan.fmme.cell.kb.State(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.Class);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM parameters';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.parameters = edu.jiangnan.fmme.cell.kb.Parameter(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.Index, data.DefaultValue, data.Units, strcmp(data.ExperimentallyConstrained,'Y'));
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM compartments';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.compartments = edu.jiangnan.fmme.cell.kb.Compartment(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM metabolites';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.metabolites = edu.jiangnan.fmme.cell.kb.Metabolite(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, data.TraditionalName, data.IUPACName, ...
+                data.Category, data.Subcategory, ...
+                data.EmpiricalFormula, data.Smiles, data.Charge, strcmp(data.Hydrophobic, 'Y'), ...
+                data.pKa, data.pI, data.logP, data.logD, data.Volume, data.MolecularWeightCalc, ...
+                data.ExchangeLowerBound, data.ExchangeUpperBound);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM genome';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.genome = edu.jiangnan.fmme.cell.kb.Genome(...
+                KnowledgeBase, data.WID,[],[],...
+                data.SequenceTopology,data.Sequence);
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM genes';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.genes = edu.jiangnan.fmme.cell.kb.Gene(...
+                 KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.Symbol, data.Synonyms, data.Type, strcmp(data.StartCodon,'Y'), data.Codons, data.Coordinate, ...
+                data.Length, data.Direction, ...
+                data.Essential, data.HalfLife, ...
+                [data.Expression, data.ExpressionColdShock, data.ExpressionHeatShock]);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM transcriptionunits';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.transcriptionUnits = edu.jiangnan.fmme.cell.kb.TranscriptionUnit(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.CCAATCoordinate, data.CCAATLength,...
+                data.TATACoordinate, data.TATALength,...
+                data.GCCoordinate, data.GCLength,...
+                data.TSSCoordinate);
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM genomefeatures';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.genomeFeatures = edu.jiangnan.fmme.cell.kb.GenomeFeature(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.Type, data.Subtype, data.Coordinate, data.Length, data.Direction);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM proteinmonomers';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.proteinMonomers = edu.jiangnan.fmme.cell.kb.ProteinMonomer(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.Topology, data.ActiveSite, data.MetalBindingSite, data.DNAFootprint, data.DNAFootprintBindingStrandedness, data.DNAFootprintRegionStrandedness, data.MolecularInteraction, ...
+                data.ChemicalRegulation, data.Subsystem, data.GeneralClassification, data.ProteaseClassification, ...
+                data.TransporterClassification, ...
+                strcmp(data.NTerminalMethionineCleavage,'Y'), data.SignalSequenceType, data.SignalSequenceLocation, data.SignalSequenceLength, ...
+                data.ActivationRule);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM reactions';
+this.prepareStatement(sql);
+data = this.query();
+>>KnowledgeBase.reactions = edu.jiangnan.fmme.cell.kb.Reaction(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, data.Type, ...
+                data.ECNumber, data.Spontaneous, data.Direction, data.DeltaG, data.Keq, ...
+                data.RateLawForward, data.KmForward, data.VmaxExpForward, data.VmaxExpUnitForward, ...
+                data.RateLawBackward, data.KmBackward, data.VmaxExpBackward, data.VmaxExpUnitBackward, ...
+                data.OptimalpH, data.OptimalTemp, ...
+                data.Activators, data.Inhibitors, ...
+                data.LowerBound, data.UpperBound, data.BoundUnits);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM pathways';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.pathways = edu.jiangnan.fmme.cell.kb.Pathway(...
+              KnowledgeBase, data.WID, data.WholeCellModelID, data.Name);
+
+
+this = MySQLDatabase('127.0.0.1:3306','s288c','root','');
+sql='SELECT * FROM proteincomplexs';
+this.prepareStatement(sql);
+data = this.query();
+KnowledgeBase.proteinComplexs = edu.jiangnan.fmme.cell.kb.ProteinComplex(...
+                KnowledgeBase, data.WID, data.WholeCellModelID, data.Name, ...
+                data.DNAFootprint, data.DNAFootprintBindingStrandedness, data.DNAFootprintRegionStrandedness, data.MolecularInteraction, data.ChemicalRegulation, ...
+                data.Subsystem, data.GeneralClassification, data.ProteaseClassification, ...
+                data.TransporterClassification, ...
+                data.ActivationRule, data.DisulfideBonds);

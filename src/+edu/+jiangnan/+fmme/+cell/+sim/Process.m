@@ -396,7 +396,7 @@ classdef Process < handle
              ~, ~, ~, ...
              this.stimulusGlobalIndexs] = this.initializeConstantsHelper(...
                 this.stimuliWholeCellModelIDs, options.retainStimuliCompartments);
-
+           
             %- compute mapping of substrates to simulation's state
             %- fetch names of substrates from simulation
             %- fetch molecular weights of substrates from simulation
@@ -477,7 +477,6 @@ classdef Process < handle
                 this.stimulus.values, this.metabolite.counts, this.rna.counts, this.monomer.counts, this.complex.counts);
             this.substrates = this.copySubstratesFromState(...
                 this.stimulus.values, this.metabolite.counts, this.rna.counts, this.monomer.counts, this.complex.counts);
-			
             [this.enzymes, this.boundEnzymes] = this.copyEnzymesFromState(...
                 this.stimulus.values, this.metabolite.counts, this.rna.counts, this.monomer.counts, this.complex.counts);
         end
@@ -616,6 +615,7 @@ classdef Process < handle
             if isempty(enzymes)
                 return;
             end
+            
             if numTimePoints == 1
                 if ~isempty(this.enzymeStimulusGlobalCompartmentIndexs)
                     enzymes(this.enzymeStimulusLocalIndexs, :) = ...
@@ -674,6 +674,7 @@ classdef Process < handle
                         this.complex.matureIndexs(this.enzymeComplexGlobalIndexs),...
                         this.enzymeComplexCompartmentIndexs);
                 end
+                
                 if nargin < 2
                     return;
                 end
@@ -800,7 +801,6 @@ classdef Process < handle
             end
             
             if ~isempty(this.substrates)
-				
                 if numTimePoints == 1
                     if ~isempty(this.substrateStimulusGlobalCompartmentIndexs)
                         this.stimulus.values(this.substrateStimulusGlobalCompartmentIndexs) = ...
@@ -814,12 +814,10 @@ classdef Process < handle
                         this.rna.counts(this.substrateRNAGlobalCompartmentIndexs) = ...
                             this.substrates(this.substrateRNALocalIndexs, :);
                     end
-					
                     if ~isempty(this.substrateMonomerGlobalCompartmentIndexs)
                         this.monomer.counts(this.substrateMonomerGlobalCompartmentIndexs) = ...
                             this.substrates(this.substrateMonomerLocalIndexs, :);
                     end
-					
                     if ~isempty(this.substrateComplexGlobalCompartmentIndexs)
                         this.complex.counts(this.substrateComplexGlobalCompartmentIndexs) = ...
                             this.substrates(this.substrateComplexLocalIndexs, :);
@@ -1170,6 +1168,7 @@ classdef Process < handle
             if ~exist('retainCompartments','var')
                 retainCompartments = false;
             end
+
             names             = cell(length(wholeCellModelIDs),1);
             globalIndexs      = zeros(length(wholeCellModelIDs),1);
             compartmentIndexs = zeros(length(wholeCellModelIDs),1);
@@ -1200,7 +1199,7 @@ classdef Process < handle
             rnaCompartments             = repmat(this.compartment.cytosolIndexs, size(rnaIDs));
             monomerCompartments         = this.monomer.compartments(this.monomer.matureIndexs);
             complexCompartments         = this.complex.compartments(this.complex.matureIndexs);
-			
+
             for i = 1:length(wholeCellModelIDs)
                 index = find(strcmp(stimuliIDs,wholeCellModelIDs{i}),1,'first');
                 if ~isempty(index)
@@ -1211,7 +1210,7 @@ classdef Process < handle
                     stimulis(i) = true;
                     continue;
                 end
-				
+
                 index = find(strcmp(metaboliteIDs,wholeCellModelIDs{i}),1,'first');
                 if ~isempty(index)
                     names{i} = metaboliteNames{index};
@@ -1221,7 +1220,7 @@ classdef Process < handle
                     metabolites(i) = true;
                     continue;
                 end
-				
+
                 index = find(strcmp(rnaIDs,wholeCellModelIDs{i}),1,'first');
                 if ~isempty(index)
                     names{i} = rnaNames{index};
@@ -1231,7 +1230,7 @@ classdef Process < handle
                     rnas(i) = true;
                     continue;
                 end
-					
+
                 index = find(strcmp(monomerIDs,wholeCellModelIDs{i}),1,'first');
                 if ~isempty(index)
                     names{i} = monomerNames{index};
@@ -1241,7 +1240,7 @@ classdef Process < handle
                     monomers(i) = true;
                     continue;
                 end
-				
+
                 index = find(strcmp(complexIDs,wholeCellModelIDs{i}),1,'first');
                 if ~isempty(index)
                     names{i} = complexNames{index};
@@ -1262,68 +1261,62 @@ classdef Process < handle
             if ~isempty(invalidIdxs)
                 throw(MException('Process:invalidIDs','%s not found',strjoin(', ', wholeCellModelIDs{invalidIdxs})));
             end
-			
+
             stimulusLocalIndexs   = reshape(find(stimulis),[],1);
             metaboliteLocalIndexs = reshape(find(metabolites),[],1);
             rnaLocalIndexs        = reshape(find(rnas),[],1);
             monomerLocalIndexs    = reshape(find(monomers),[],1);
             complexLocalIndexs    = reshape(find(complexs),[],1);
-			
+
             if retainCompartments
                 nCmp = this.compartment.count;
-				
+
                 stimulusGlobalIndexs        = repmat(globalIndexs(stimulusLocalIndexs),   1, nCmp);
                 metaboliteGlobalIndexs      = repmat(globalIndexs(metaboliteLocalIndexs), 1, nCmp);
                 rnaGlobalIndexs             = repmat(globalIndexs(rnaLocalIndexs),        1, nCmp);
                 monomerGlobalIndexs         = repmat(globalIndexs(monomerLocalIndexs),    1, nCmp);
                 complexGlobalIndexs         = repmat(globalIndexs(complexLocalIndexs),    1, nCmp);
-				
+
                 stimulusCompartmentIndexs   = repmat(1:nCmp, length(stimulusLocalIndexs),   1);
                 metaboliteCompartmentIndexs = repmat(1:nCmp, length(metaboliteLocalIndexs), 1);
                 rnaCompartmentIndexs        = repmat(1:nCmp, length(rnaLocalIndexs),        1);
                 monomerCompartmentIndexs    = repmat(1:nCmp, length(monomerLocalIndexs),    1);
                 complexCompartmentIndexs    = repmat(1:nCmp, length(complexLocalIndexs),    1);
-				
             else
                 stimulusGlobalIndexs        = globalIndexs(stimulusLocalIndexs);
                 metaboliteGlobalIndexs      = globalIndexs(metaboliteLocalIndexs);
                 rnaGlobalIndexs             = globalIndexs(rnaLocalIndexs);
                 monomerGlobalIndexs         = globalIndexs(monomerLocalIndexs);
                 complexGlobalIndexs         = globalIndexs(complexLocalIndexs);
-				
+
                 stimulusCompartmentIndexs   = compartmentIndexs(stimulusLocalIndexs);
                 metaboliteCompartmentIndexs = compartmentIndexs(metaboliteLocalIndexs);
                 rnaCompartmentIndexs        = compartmentIndexs(rnaLocalIndexs);
                 monomerCompartmentIndexs    = compartmentIndexs(monomerLocalIndexs);
                 complexCompartmentIndexs    = compartmentIndexs(complexLocalIndexs);
-				
             end
             
             stimulusGlobalCompartmentIndexs = sub2ind(...
                 [numel(this.stimulus.wholeCellModelIDs) this.compartment.count], ...
                 stimulusGlobalIndexs, ...
                 stimulusCompartmentIndexs);
-			
             metaboliteGlobalCompartmentIndexs = sub2ind(...
                 [numel(this.metabolite.wholeCellModelIDs) this.compartment.count], ...
                 metaboliteGlobalIndexs, ...
                 metaboliteCompartmentIndexs);
-				
             rnaGlobalCompartmentIndexs = sub2ind(...
                 [numel(this.rna.wholeCellModelIDs) this.compartment.count], ...
                 this.rna.matureIndexs(rnaGlobalIndexs), ...
                 rnaCompartmentIndexs);
-			
             monomerGlobalCompartmentIndexs = sub2ind(...
                 [numel(this.monomer.wholeCellModelIDs) this.compartment.count], ...
                 this.monomer.matureIndexs(monomerGlobalIndexs), ...
                 monomerCompartmentIndexs);
-				
             complexGlobalCompartmentIndexs = sub2ind(...
                 [numel(this.complex.wholeCellModelIDs) this.compartment.count], ...
                 this.complex.matureIndexs(complexGlobalIndexs), ...
                 complexCompartmentIndexs);
-           
+            
             bound_rnaGlobalCompartmentIndexs = sub2ind(...
                 [numel(this.rna.wholeCellModelIDs) this.compartment.count], ...
                 this.rna.boundIndexs(rnaGlobalIndexs), ...
@@ -1341,7 +1334,7 @@ classdef Process < handle
         function initializeConstants_overrideSubstrates(this, wholeCellModelIDs)
             %set whole cell model IDs
             this.substrateWholeCellModelIDs = wholeCellModelIDs;
-			
+
             %recompute mapping of substrates onto simulation
             [this.substrateNames...
              this.substrateStimulusLocalIndexs...
@@ -1416,7 +1409,6 @@ classdef Process < handle
         %Computes local indices of substrates. That is, this method returns
         %the indices of wholeCellModelIDs within this.substrateWholeCellModelIDs.
         function value = substrateIndexs(this, wholeCellModelIDs)
-		
             value = this.componentIndexs(wholeCellModelIDs, 'substrate');
 			substrateIndexs = value; 
         end
@@ -1472,13 +1464,11 @@ classdef Process < handle
         %to copy component values to simulation. Called by
         %copyToState.
         function copyToStateHelper(this, state, statePropertyName, lclPropertyName, stateIdxs, cmpIdxs, lclIdxs)
-			
             if isempty(lclIdxs)
                 return;
             end
-           
+            
             numTimePoints = size(state.(statePropertyName), 3);
-			
             state.(statePropertyName)(sub2ind(...
                 size(state.(statePropertyName)), ...
                 repmat(stateIdxs, [1 1 numTimePoints]),...

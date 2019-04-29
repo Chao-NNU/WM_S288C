@@ -2745,10 +2745,12 @@ classdef Chromosome < edu.jiangnan.fmme.cell.sim.CellState
             posStrndsA(:, 1) = mod(posStrndsA(:, 1) - 1, this.sequenceLen(i)) + 1;
             [posStrndsA, idxs] = edu.jiangnan.fmme.util.SparseMat.sort_subs(posStrndsA, [this.sequenceLen(i) this.nCompartments]);
             lensA = lensA(idxs);
-            [posStrndsB lensB] = this.splitOverOriC(i, posStrndsB, lensB);
+			
+            [posStrndsB lensB] = this.splitOverOriC(i, posStrndsB, lensB);  
             posStrndsB(:, 1) = mod(posStrndsB(:, 1) - 1, this.sequenceLen(i)) + 1;
             [posStrndsB, idxs] = edu.jiangnan.fmme.util.SparseMat.sort_subs(posStrndsB, [this.sequenceLen(i) this.nCompartments]);
             lensB = lensB(idxs);
+
             posStrnds = zeros(0, 2);
             lens = zeros(0, 1);
             for strand = 1:this.nCompartments
@@ -2790,6 +2792,7 @@ classdef Chromosome < edu.jiangnan.fmme.cell.sim.CellState
                     end
                 end
             end
+
             [posStrnds, lens] = this.joinSplitOverOriCRegions(i, posStrnds, lens);
            end
         %split regions into several splitLen sized pieces
@@ -2819,11 +2822,10 @@ classdef Chromosome < edu.jiangnan.fmme.cell.sim.CellState
         end
         %join regions which have been split over the ORI
         function [posStrnds, lens] = joinSplitOverOriCRegions(this, i, posStrnds, lens)
-			
+		
 			pos = posStrnds(:, 1);
             strnds = posStrnds(:, 2);
             ends = pos + lens - 1;
-			
             for j = 1:max(strnds) %change from i to j
                 idx1 = find(pos == 1 & strnds == j, 1, 'first');
                 idx2 = find(ends == this.sequenceLen(i) & strnds == j, 1, 'first');

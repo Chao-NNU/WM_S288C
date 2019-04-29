@@ -22,9 +22,7 @@
 % Author: Jayodita Sanghvi, jayodita@stanford.edu
 % Author: Jonathan Karr, jkarr@stanford.edu
 % Affilitation: Covert Lab, Department of Bioengineering, Stanford University
-% Affilitation: FMME Lab, School of Biotechnology, Jiangna University
 % Last updated: 12/13/2010
-% Last modified: 10/9/2018
 
 classdef RNAPolymerase < edu.jiangnan.fmme.cell.sim.CellState
     %property annotations
@@ -75,8 +73,8 @@ classdef RNAPolymerase < edu.jiangnan.fmme.cell.sim.CellState
     
     %state
     properties
-        states = cell(16,1)   %RNA polymerase state (see Transcription process)
-        positionStrands = cell(16,1) %the position on the chromosome(s) for each RNApolymerase
+        states = cell(16,1)                     %RNA polymerase state (see Transcription process)
+        positionStrands = cell(16,1)            %the position on the chromosome(s) for each RNApolymerase
         transcriptionFactorBindingProbFoldChange = cell(16,1) 
 		%fold change effect of currently active transcription factors on RNA polymerase binding probabilities [nTUs X 2]
         supercoilingBindingProbFoldChange = cell(16,1)       
@@ -120,12 +118,10 @@ classdef RNAPolymerase < edu.jiangnan.fmme.cell.sim.CellState
     %allocate memory for state
     methods
         function allocateMemory(this, numTimePoints)
-		
-			%this.states%{i}                                   = zeros(0, 1, numTimePoints);
 			for i = 1:16
+		
+			this.states{i}                                   = zeros(0, 1, numTimePoints);
             nTUs{i} = numel(this.chromosome.transcriptionUnitWholeCellModelIDs{i});
-			this.states{i}									 = zeros(0, 2, numTimePoints);
-			%this.positionStrands{i}                          = zeros(nTUs{i}, 2, numTimePoints);
             this.positionStrands{i}                          = zeros(0, 2, numTimePoints);
             this.transcriptionFactorBindingProbFoldChange{i} = zeros(nTUs{i}, 2, numTimePoints);
             this.supercoilingBindingProbFoldChange{i}        = zeros(nTUs{i}, 2, numTimePoints);

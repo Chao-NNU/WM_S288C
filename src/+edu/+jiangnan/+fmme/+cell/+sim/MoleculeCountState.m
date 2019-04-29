@@ -72,11 +72,11 @@ classdef MoleculeCountState < edu.jiangnan.fmme.cell.sim.CellState
     methods            
         %decay rates of monomers (molecules/s)
         function value = get.decayRates(this)
-            value = log(1.111) ./ this.halfLives;
+            value = log(2) ./ this.halfLives;
         end
         
         function set.decayRates(this, value)
-            this.halfLives = log(1.111) ./ value;
+            this.halfLives = log(2) ./ value;
         end
         
         function value = get.dryWeight(this)

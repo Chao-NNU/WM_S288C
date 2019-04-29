@@ -63,11 +63,13 @@ end
 chrComp = chrComp{1} + chrComp{2} + chrComp{3} + chrComp{4} + chrComp{5} + chrComp{6} + chrComp{7} + chrComp{8} + chrComp{9} + chrComp{10}...
 		+ chrComp{11} + chrComp{12} + chrComp{13} + chrComp{14} + chrComp{15} + chrComp{16};
 
+keyboard
+
 rnaComp = r.baseCounts;
 monComp = pm.baseCounts;
 
 rnaExp = r.expression;
-
+keyboard
 %% seed random number generator
 this.seedRandStream();
 
@@ -117,7 +119,7 @@ switch this.macromoleculeStateInitialization
     case 'expected'
         monExp = zeros(size(pm.wholeCellModelIDs));
         monExp(pm.matureIndexs) = (r.matureRNAGeneComposition(g.mRNAIndexs, :) * r.expression(r.matureIndexs)) ./ ...
-            (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
+            (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
         monExp = monExp / sum(monExp);
         
         pm.counts(sub2ind(size(pm.counts), (1:size(pm.counts,1))', pm.compartments)) = ...
@@ -125,6 +127,7 @@ switch this.macromoleculeStateInitialization
 		
     case 'multinomial'
         n = pm.macromoleculeStateInitializationVariation;
+        
         if rnaWt > 0
             mRNAExp = rnaExp(r.matureIndexs(r.matureMRNAIndexs));
             mRNAExp = mRNAExp / sum(mRNAExp);
@@ -132,7 +135,7 @@ switch this.macromoleculeStateInitialization
             mRNAProd = mRNAProd / sum(mRNAProd);
             mRNACnt = mRNAExp * rnaWt * r.weightFractionMRNA * ConstantUtil.nAvogadro / ...
                 (mRNAExp' * r.molecularWeights(r.matureIndexs(r.matureMRNAIndexs)));
-            totMRNAProd = (sum(mRNACnt) * log(1.111) / t.cellCycleLength + r.decayRates(r.matureIndexs(r.matureMRNAIndexs))' * mRNACnt) * t.cellCycleLength / log(1.111);
+            totMRNAProd = (sum(mRNACnt) * log(2) / t.cellCycleLength + r.decayRates(r.matureIndexs(r.matureMRNAIndexs))' * mRNACnt) * t.cellCycleLength / log(2);
 			
 			sample_mRNAProd = this.randStream.mnrnd(round(n * totMRNAProd), mRNAProd)';
             sample_mRNAExp = zeros(size(sample_mRNAProd));
@@ -151,12 +154,10 @@ switch this.macromoleculeStateInitialization
         if prtWt > 0
             monProd = r.matureRNAGeneComposition(g.mRNAIndexs, r.matureMRNAIndexs) * sample_mRNAExp;
             monProd = monProd / sum(monProd);
-            monExp = monProd ./ (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
+            monExp = monProd ./ (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
             monExp = monExp / sum(monExp);
-			
             monCnt = prtWt * ConstantUtil.nAvogadro / (monExp' * pm.molecularWeights(pm.matureIndexs)) * monExp;
-			
-            totMonProd = monCnt' * (1 + t.cellCycleLength / log(1.111) * pm.decayRates(pm.matureIndexs));
+            totMonProd = monCnt' * (1 + t.cellCycleLength / log(2) * pm.decayRates(pm.matureIndexs));
             sample_monExp = this.randStream.mnrnd(round(n * totMonProd), monExp)';
             sample_monExp = this.randStream.stochasticRound(n * sample_monExp * prtWt * mass.initialFractionAAsInMonomers * ...
                 ConstantUtil.nAvogadro / (sample_monExp' * pm.molecularWeights(pm.matureIndexs)));
@@ -168,7 +169,7 @@ switch this.macromoleculeStateInitialization
                 idx = find(order(i) <= tmp, 1, 'first');
                 sample_monExp2(idx) = sample_monExp2(idx) + 1;
             end
-			          
+			            
             pm.counts(sub2ind(size(pm.counts), pm.matureIndexs, pm.compartments(pm.matureIndexs))) = ...
                 this.randStream.stochasticRound(2/n * sample_monExp2);
         end
@@ -288,7 +289,7 @@ for i = 1:length(processes)
     process.simulationStateSideEffects = [];
 	process.copyFromState();
 	process.initializeState();
-    process.copyToState();
+    process.copyToState();	
     if ~isempty(process.simulationStateSideEffects)
         process.simulationStateSideEffects.updateSimulationState(this);
     end

@@ -261,23 +261,20 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
 			'YER164W_YGR116W_YNL230C_YPL046C_YPR133C_PENTAMER'; %Transcription elongation factor complex
 			'YGL044C_MONOMER';									%Transcription termination factor RNA15
 			'YER148W_MONOMER';			  						%TATA-binding protein (TBP)
-			'RNA_POLYMERASE_I';									%DNA-directed RNA polymerase I complex
-			'RNA_POLYMERASE_II'};								%DNA-directed RNA polymerase II complex
+			'RNA_POLYMERASE_II';								%DNA-directed RNA polymerase II complex
+			'RNA_POLYMERASE_III'};								%DNA-directed RNA polymerase III complex
 			
 		
         enzymeIndexs_transcriptionFactors    = (1:4)'; %indices within enzymes of transcription factors
-        enzymeIndexs_GCN4             		 = 1;      %index within enzymes of General control protein GCN4
+        enzymeIndexs_GCN4             		 = 1;       %index within enzymes of General control protein GCN4
 		enzymeIndexs_elongationFactor        = 2;      %index within enzymes of elongation factor
 		enzymeIndexs_terminationFactor       = 3;      %index within enzymes of termination factor RNA15
         enzymeIndexs_antiterminationFactor   = 4;      %index within enzymes of TATA-binding protein (TBP)
-		enzymeIndexs_rnaPolymerase1          = 5;      %index within enzymes of DNA-directed RNA polymerase II
-		enzymeIndexs_rnaPolymerase2          = 6;      %index within enzymes of DNA-directed RNA polymerase III
+		enzymeIndexs_rnaPolymerase2          = 5;      %index within enzymes of DNA-directed RNA polymerase II
+		enzymeIndexs_rnaPolymerase3          = 6;      %index within enzymes of DNA-directed RNA polymerase III
 		
         complexIndexs_DnaA_ATP                         %indices within protein complexes of DnaA-ATP
         transcriptionUnitIndexs_DnaAR12345Boxes        %indices of transcription units containing the functional DnaA boxes R1-5
-		
-		TUIndexs									   %indices of transcription units
-		
     end
     
     %fixed biological constants
@@ -360,14 +357,7 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
 			tus{i} = [knowledgeBase.genomes(i).genomeFeatures(idxs{i}).transcriptionUnits];
 			tu{i}  = min([tus{i}.idx])';
 			this.transcriptionUnitIndexs_DnaAR12345Boxes{i} = find([knowledgeBase.genomes(i).transcriptionUnits.idx]' ==  tu{i});
-			end
-			
-			for i = 1:6447
-				B(i) = knowledgeBase.genes(i).genomes.idx;
-			end
-			for i = 1:16
-				this.TUIndexs{i} = find(B==i);
-			end
+			end	
         end
         
         %retrieve state from simulation
@@ -417,13 +407,28 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
             %Here we only account for the contributions of transcription.
             invMat = edu.jiangnan.fmme.util.ComputationUtil.invertCompositionMatrix(this.rna.nascentRNAMatureRNAComposition);
 			
-			transcribedNTPss = zeros(4,6447);
-			
 			for i = 1:16
 			transcribedNTP{i} = this.transcriptionUnitBaseCounts{i}(:, this.substrateIndexs_nmp)';
-			transcribedNTPss(:,this.TUIndexs{i})     = transcribedNTP{i};
 			end
 			
+			transcribedNTPss = zeros(4,6447);
+			transcribedNTPss(:,1:101)     = transcribedNTP{1};
+			transcribedNTPss(:,102:533)   = transcribedNTP{2}; 
+			transcribedNTPss(:,534:717)   = transcribedNTP{3}; 
+			transcribedNTPss(:,718:1516)  = transcribedNTP{4}; 
+			transcribedNTPss(:,1517:1833) = transcribedNTP{5};
+			transcribedNTPss(:,1834:1976) = transcribedNTP{6}; 
+			transcribedNTPss(:,1977:2559) = transcribedNTP{7}; 
+			transcribedNTPss(:,2560:2864) = transcribedNTP{8}; 
+			transcribedNTPss(:,2865:3097) = transcribedNTP{9};
+			transcribedNTPss(:,3098:3488) = transcribedNTP{10};
+			transcribedNTPss(:,3489:3826) = transcribedNTP{11};
+			transcribedNTPss(:,3827:4403) = transcribedNTP{12};
+			transcribedNTPss(:,4404:4908) = transcribedNTP{13};
+			transcribedNTPss(:,4909:5324) = transcribedNTP{14};
+			transcribedNTPss(:,5325:5903) = transcribedNTP{15};
+			transcribedNTPss(:,5904:6401) = transcribedNTP{16};
+
 			transcribedNTPs = transcribedNTPss * invMat * states.rnaProductions;
 			
             %transcribedNTPs = this.transcriptionUnitBaseCounts(:, this.substrateIndexs_nmp)' * invMat * states.rnaProductions;
@@ -436,20 +441,33 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
             %RNA polymerase
 			len = this.transcripts.transcriptionUnitLengths;
 			lens = zeros(6447,1);
-			for i = 1:16
-			lens(this.TUIndexs{i},1) = len{i};
-			end
+			lens(1:101,1)     = len{1};
+			lens(102:533,1)   = len{2};
+			lens(534:717,1)   = len{3};
+			lens(718:1516,1)  = len{4};
+			lens(1517:1833,1) = len{5};
+			lens(1834:1976,1) = len{6};
+			lens(1977:2559,1) = len{7};
+			lens(2560:2864,1) = len{8};
+			lens(2865:3097,1) = len{9};
+			lens(3098:3488,1) = len{10};
+			lens(3489:3826,1) = len{11};
+			lens(3827:4403,1) = len{12};
+			lens(4404:4908,1) = len{13};
+			lens(4909:5324,1) = len{14};
+			lens(5325:5903,1) = len{15};
+			lens(5904:6401,1) = len{16};
 			
             fractionInitiating = this.rnaPolymeraseElongationRate * sum(invMat * states.rnaProductions0) / ... %fraction of active RNA polymerases that are initiating
                 (lens' * invMat * states.rnaProductions0);
-            minEnzExp(this.enzymeIndexs_rnaPolymerase1) = 4.5867 * ...
+            minEnzExp(this.enzymeIndexs_rnaPolymerase2) = 4.5867 * ...
                 (lens' * invMat * states.rnaProductions0) / ...
                 this.rnaPolymeraseElongationRate / ...
                 this.rnaPolymerases.stateExpectations(this.rnaPolymerases.activelyTranscribingIndex) / ...
                 (1 - fractionInitiating);
             
             %sigma, elongation, termination factors
-            minEnzExp(this.enzymeIndexs_GCN4) = minEnzExp(this.enzymeIndexs_rnaPolymerase1) * ...
+            minEnzExp(this.enzymeIndexs_GCN4) = minEnzExp(this.enzymeIndexs_rnaPolymerase2) * ...
                 (this.rnaPolymerases.stateExpectations(this.rnaPolymerases.activelyTranscribingIndex) * fractionInitiating + ...
                 this.rnaPolymerases.stateExpectations(this.rnaPolymerases.specificallyBoundIndex));
             minEnzExp(this.enzymeIndexs_elongationFactor)  = 2;
@@ -478,42 +496,39 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
 				
             trnsptStarts{i}(trnsptDirs{i} == 1) = ...
                 trnsptStarts{i}(trnsptDirs{i} == 1) - ...
-                this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase1);
+                this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase2);
             trnsptStarts{i}(trnsptDirs{i} == -1) = ...
                 trnsptStarts{i}(trnsptDirs{i} == -1) + ...
-                this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase1);
+                this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase2);
 			end
-			
+
 			%% enzymes
             freTFs = this.enzymes(this.enzymeIndexs_transcriptionFactors);
             bndTFs = this.boundEnzymes(this.enzymeIndexs_transcriptionFactors);
-            frePls = this.enzymes(this.enzymeIndexs_rnaPolymerase1);
-            bndPls = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase1);
-            freHls = this.enzymes(this.enzymeIndexs_rnaPolymerase2);
-            bndHls = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2);
+            frePls = this.enzymes(this.enzymeIndexs_rnaPolymerase2);
+            bndPls = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2);
+            freHls = this.enzymes(this.enzymeIndexs_rnaPolymerase3);
+            bndHls = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase3);
             pls = frePls + bndPls + freHls + bndHls;
 			
-			%keyboard
 			for i = 1:16
             %% allocate
-			pl(i) = fix(pls * (length(trnspts.transcriptionUnitWholeCellModelIDs{i}) / 6401));
-            rnaPols.states{i} = repmat(rnaPols.notExistValue, [2 * pl(i), 1, 1]);
-            rnaPols.positionStrands{i} = zeros([2 * pl(i), 2, 1]);
-            trnspts.boundTranscriptionUnits{i} = repmat(trnspts.nullTranscriptValue, [2 * pl(i), 1, 1]);
-            trnspts.boundTranscriptProgress{i} = repmat(trnspts.nullTranscriptValue, [2 * pl(i), 1, 1]);
-            trnspts.boundTranscriptChromosome{i} = repmat(trnspts.nullTranscriptValue, [2 * pl(i), 1, 1]);			
+            rnaPols.states{i} = repmat(rnaPols.notExistValue, [2 * pls, 1, 1]);
+            rnaPols.positionStrands{i} = zeros([2 * pls, 2, 1]);
+            trnspts.boundTranscriptionUnits{i} = repmat(trnspts.nullTranscriptValue, [2 * pls, 1, 1]);
+            trnspts.boundTranscriptProgress{i} = repmat(trnspts.nullTranscriptValue, [2 * pls, 1, 1]);
+            trnspts.boundTranscriptChromosome{i} = repmat(trnspts.nullTranscriptValue, [2 * pls, 1, 1]);			
             end
-			%keyboard
+			
             %% initialize
-			for i = 1:16
-				pState    = rnaPols.stateExpectations;
-				probs{i}  = this.computeRNAPolymeraseTUBindingProbabilities(i);			
-				pBinds{i} = trnspts.transcriptionUnitLengths{i} .* probs{i}(:, 1);
-				pSpBinds{i} = pBinds{i};
-			end
 			for i = 16
+            pState = rnaPols.stateExpectations;
+            probs{i} = this.computeRNAPolymeraseTUBindingProbabilities(i);
+            pBinds{i} = trnspts.transcriptionUnitLengths{i} .* probs{i}(:, 1);
+            pSpBinds{i} = pBinds{i};
+			
             %for j = 1:pls %change from i to j
-			for j = 1:pl(i)
+			for j = 1:pls
 				if frePls == 0 || ~any(pBinds{i}) || freTFs(this.enzymeIndexs_elongationFactor) == 0
                     pState(rnaPols.activelyTranscribingIndex) = 0;
                 end				
@@ -526,42 +541,41 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 if ~any(pState)
                     pState(rnaPols.freeIndex) = 1;
                 end
-				
                 %randomly select state
-				state{i} = this.randStream.randsample(4, 1, true, pState);
-
+                state{i} = this.randStream.randsample(4, 1, true, pState);
+				
                 %Actively transcribing, specifically bound: randomly select
                 %transcription unit
-                switch state{i}	
+
+                switch state{i}		
                     case rnaPols.activelyTranscribingIndex	%1
                         tmp_pBinds{i} = pBinds{i};
                         posStrnds{i} = zeros(0, 2);
 						while any(tmp_pBinds{i})
                             iTU{i} = this.randStream.randsample(numel(pBinds{i}), 1, true, tmp_pBinds{i});
                             tmp_pBinds{i}(iTU{i}) = 0;
-							%keyboard
                             [~, posStrnds{i}] = this.bindProteinToChromosomeStochastically(i, ...
-                                this.enzymeIndexs_rnaPolymerase1, 1, [trnsptStarts{i}(iTU{i})+1 trnsptStrnds{i}(iTU{i})], trnsptLens{i}(iTU{i})-2);
+                                this.enzymeIndexs_rnaPolymerase2, 1, [trnsptStarts{i}(iTU{i})+1 trnsptStrnds{i}(iTU{i})], trnsptLens{i}(iTU{i})-2);
+						
 						if ~isempty(posStrnds{i})
                                 break;
                             end
                         end
-						%keyboard
+						
 						if isempty(posStrnds{i})
                             %throw(MException('Transcription:error', 'unable to bind chromosome'));
 							warning('unable to bind chromosome');
                         end
 						
-                        posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) = posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase1);
-                        posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) = posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints3Prime(this.enzymeIndexs_rnaPolymerase1);
+                        posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) = posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase2);
+                        posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) = posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints3Prime(this.enzymeIndexs_rnaPolymerase2);
 						
                         if trnspts.transcriptionUnitDirections{i}(iTU{i})
                             state{i} = posStrnds{i}(:, 1) - trnspt5Coords{i}(iTU{i}) + 1;
                         else
                             state{i} = trnspt5Coords{i}(iTU{i}) - posStrnds{i}(:, 1) + 1;
                         end
-						
-						%keyboard
+				
                         rnaPols.states{i}(j) = state{i};
                         rnaPols.positionStrands{i}(j, :) = posStrnds{i};
                         trnspts.boundTranscriptProgress{i}(j) = state{i};
@@ -577,7 +591,7 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                             iTU{i} = this.randStream.randsample(numel(pSpBinds{i}), 1, true, pSpBinds{i});
                             pSpBinds{i}(iTU{i}) = 0;
 
-                            [~, ~, posStrnds{i}] = this.bindProteinToChromosome(i,[trnspt5Coords{i}(iTU{i})-trnsptDirs{i}(iTU{i}) trnsptStrnds{i}(iTU{i})], this.enzymeIndexs_rnaPolymerase2, 1);			
+                            [~, ~, posStrnds{i}] = this.bindProteinToChromosome(i,[trnspt5Coords{i}(iTU{i})-trnsptDirs{i}(iTU{i}) trnsptStrnds{i}(iTU{i})], this.enzymeIndexs_rnaPolymerase3, 1);			
                             if ~isempty(posStrnds{i})
                                 break;
                             end
@@ -600,18 +614,17 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
 						
                     case rnaPols.nonSpecificallyBoundIndex	%3
 					
-                        [~, posStrnds{i}] = this.bindProteinToChromosomeStochastically(i, this.enzymeIndexs_rnaPolymerase1, 1);
+                        [~, posStrnds{i}] = this.bindProteinToChromosomeStochastically(i, this.enzymeIndexs_rnaPolymerase2, 1);
 						
                         if isempty(posStrnds{i})
                             %throw(MException('Transcription:error', 'unable to bind chromosome'));
 							warning('unable to bind chromosome');
                         end
 						
-                        posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) = posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase1);
-                        posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) = posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints3Prime(this.enzymeIndexs_rnaPolymerase1);
+                        posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) = posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase2);
+                        posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) = posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints3Prime(this.enzymeIndexs_rnaPolymerase2);
                         
                         rnaPols.states{i}(j) = rnaPols.nonSpecificallyBoundValue;
-						
                         rnaPols.positionStrands{i}(j, :) = posStrnds{i};
                         trnspts.boundTranscriptionUnits{i}(j) = trnspts.nullTranscriptValue;
                         trnspts.boundTranscriptProgress{i}(j) = trnspts.nullTranscriptValue;
@@ -625,17 +638,16 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                         trnspts.boundTranscriptionUnits{i}(j) = trnspts.nullTranscriptValue;
                         trnspts.boundTranscriptProgress{i}(j) = trnspts.nullTranscriptValue;
                         trnspts.boundTranscriptChromosome{i}(j) = trnspts.nullTranscriptValue;
-					end	
                 end
             end
             
             %% store states of enzymes
             this.enzymes(this.enzymeIndexs_transcriptionFactors)      = freTFs;
             this.boundEnzymes(this.enzymeIndexs_transcriptionFactors) = bndTFs;
-            this.enzymes(this.enzymeIndexs_rnaPolymerase1)            = frePls;
-            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase1)       = bndPls;
-            this.enzymes(this.enzymeIndexs_rnaPolymerase2)            = freHls;
-            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2)       = bndHls;
+            this.enzymes(this.enzymeIndexs_rnaPolymerase2)            = frePls;
+            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2)       = bndPls;
+            this.enzymes(this.enzymeIndexs_rnaPolymerase3)            = freHls;
+            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase3)       = bndHls;
             
             %% decrement counts of RNAs
             this.copyToState();
@@ -654,6 +666,7 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 + rna.updateExternalState(-(initRnaCnts(:, comp.cytosolIndexs) - rna.counts(:, comp.cytosolIndexs)), true);
             
             this.copyFromState();
+			end
         end
         
         %resource requirements
@@ -677,10 +690,10 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
             %numbers of enzymes
             nFreTfs  = this.enzymes(this.enzymeIndexs_transcriptionFactors);
             nBndTFs  = this.boundEnzymes(this.enzymeIndexs_transcriptionFactors);
-            nFrePols = this.enzymes(this.enzymeIndexs_rnaPolymerase1);
-            nBndPols = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase1);
-            nFreHols = this.enzymes(this.enzymeIndexs_rnaPolymerase2);
-            nBndHols = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2);
+            nFrePols = this.enzymes(this.enzymeIndexs_rnaPolymerase2);
+            nBndPols = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2);
+            nFreHols = this.enzymes(this.enzymeIndexs_rnaPolymerase3);
+            nBndHols = this.boundEnzymes(this.enzymeIndexs_rnaPolymerase3);
             nTotPols = nFrePols + nBndPols + nFreHols + nBndHols;
 
 			for i = 16			
@@ -738,8 +751,8 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
             nInitMax{i} = this.randStream.stochasticRound(numel(sbPols{i}) * pStTrns{i}(rnaPols.activelyTranscribingIndex, rnaPols.specificallyBoundIndex));
 			%#ok<*PROP>
             if nInitMax{i} > 0 %meet the condition
-                releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(sbPols{i}(1:nInitMax{i}), :), false, this.enzymeIndexs_rnaPolymerase2, true, true);
-				if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase2), nInitMax{i})
+                releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(sbPols{i}(1:nInitMax{i}), :), false, this.enzymeIndexs_rnaPolymerase3, true, true);
+				if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase3), nInitMax{i})
                     %throw(MException('Transcription:error', 'Unable to release protein'));
 					warning('Unable to release protein');
                 end
@@ -747,15 +760,15 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 %try to initiate RNA polymerases
                 positions{i} = tu5Coords{i}(trnspts.boundTranscriptionUnits{i}(sbPols{i}(1:nInitMax{i})));
                 tfs{i} = this.bindProteinToChromosome(i, [positions{i} rnaPols.positionStrands{i}(sbPols{i}(1:nInitMax{i}), 2)], ...
-                    this.enzymeIndexs_rnaPolymerase2);
+                    this.enzymeIndexs_rnaPolymerase3);
                 rnaPols.states{i}(sbPols{i}(tfs{i})) = rnaPols.activelyTranscribingValue;
                 trnspts.boundTranscriptProgress{i}(sbPols{i}(tfs{i})) = trnspts.newTranscriptValue;
                 rnaPols.positionStrands{i}(sbPols{i}(tfs{i}), 1) = positions{i}(tfs{i}, 1);
                 
                 %rebind RNA polymerases that couldn't move forward
-                
+                %keyboard
 				if ~all(this.bindProteinToChromosome(i, rnaPols.positionStrands{i}(sbPols{i}(~tfs{i}), :), ...
-                        this.enzymeIndexs_rnaPolymerase2))
+                        this.enzymeIndexs_rnaPolymerase3))
                     %throw(MException('Transcription:error', 'Unable to unbind protein'));
 					warning('Unable to unbind protein')
                 end
@@ -767,9 +780,9 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
             if nUnsb{i} > 0 %not meet the condition
                 idxs{i} = sbPols{i}(end-nUnsb{i}+1:end);
                 posStrnds{i} = rnaPols.positionStrands{i}(idxs{i}, :);
-                releasedProteins{i} = this.releaseProteinFromSites(i, posStrnds{i}, false, this.enzymeIndexs_rnaPolymerase2, true, true);
-                
-				if ~isequal(releasedProteins(this.enzymeIndexs_rnaPolymerase2), nUnsb{i})
+                releasedProteins{i} = this.releaseProteinFromSites(i, posStrnds{i}, false, this.enzymeIndexs_rnaPolymerase3, true, true);
+                %keyboard
+				if ~isequal(releasedProteins(this.enzymeIndexs_rnaPolymerase3), nUnsb{i})
                     %throw(MException('Transcription:error', 'Unable to unbind protein'));
 					warning('Unable to unbind protein');
                 end                
@@ -793,9 +806,9 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 idxs{i} = freeNsbPols{i}(1:nFreeNsbPols{i});
 				
 				nNsbPols{i} = sum(rnaPols.states{i}(idxs{i}) == rnaPols.nonSpecificallyBoundValue);
-                releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(idxs{i}, :), false, this.enzymeIndexs_rnaPolymerase1, true, true);
-				
-				if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase1), nNsbPols{i})
+                releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(idxs{i}, :), false, this.enzymeIndexs_rnaPolymerase2, true, true);
+				%keyboard
+				if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase2), nNsbPols{i})
                     %throw(MException('Transcription:error', 'Unable to release protein'));
 					warning('Unable to release protein');
                 end
@@ -818,14 +831,14 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 if nnz(c.polymerizedRegions{i}) == 2
                     [~, iTU{i}, posStrnds{i}, nFreeNsbPols{i}] = this.bindProteinToChromosome(i, ...
                         [tu5Coords{i}-tuDirs{i} tuStrnds{i}], ...
-                        this.enzymeIndexs_rnaPolymerase2, nFreeNsbPols{i}, pBnds{i}(:, 1), ...
+                        this.enzymeIndexs_rnaPolymerase3, nFreeNsbPols{i}, pBnds{i}(:, 1), ...
                         true, true, 1, false, []);
                     iChr = 1;
                 else
                     [~, iTU{i}, posStrnds{i}, nFreeNsbPols{i}] = this.bindProteinToChromosome(i, ...
                         [tu5Coords{i}-tuDirs{i} tuStrnds{i}
                         tu5Coords{i}-tuDirs{i} tuStrnds{i} + 2], ...
-                        this.enzymeIndexs_rnaPolymerase2, nFreeNsbPols{i}, pBnds{i}(:), ...
+                        this.enzymeIndexs_rnaPolymerase3, nFreeNsbPols{i}, pBnds{i}(:), ...
                         true, true, 1, false, []);
                     iTU{i} = mod(iTU{i} - 1, numel(tuLens{i})) + 1;
                     iChr = ceil(posStrnds{i}(:, 2) / 2);
@@ -845,13 +858,13 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
 			
             %free polymerases/non-specifically bound becoming free/non-specifically bound
             nsbPols{i} = find(rnaPols.states{i} == rnaPols.nonSpecificallyBoundValue);
-			
+			%keyboard
             if ~isempty(nsbPols{i})
                 %set non-specifically bound to free
                 releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(nsbPols{i}, :),...
-									  false, this.enzymeIndexs_rnaPolymerase1, true, true);
-									  
-                if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase1), numel(nsbPols{i}))
+									  false, this.enzymeIndexs_rnaPolymerase2, true, true);
+				%keyboard					  
+                if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase2), numel(nsbPols{i}))
                     %throw(MException('Transcription:error', 'Unable to release protein'));
 					warning('Unable to release protein');
                 end
@@ -879,9 +892,9 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
 				
             if nNsbPols{i} > 0 %meet the condition
                 %set some to non-specifically bound state
-                [nNsbPols{i} posStrnds{i}] = this.bindProteinToChromosomeStochastically(i, this.enzymeIndexs_rnaPolymerase1, nNsbPols{i});
-                posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) = posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase1);
-                posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) = posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints3Prime(this.enzymeIndexs_rnaPolymerase1);
+                [nNsbPols{i} posStrnds{i}] = this.bindProteinToChromosomeStochastically(i, this.enzymeIndexs_rnaPolymerase2, nNsbPols{i});
+                posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) = posStrnds{i}( isodd(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints5Prime(this.enzymeIndexs_rnaPolymerase2);
+                posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) = posStrnds{i}(iseven(posStrnds{i}(:, 2)), 1) + this.enzymeDNAFootprints3Prime(this.enzymeIndexs_rnaPolymerase2);
 				                
                 rnaPols.states{i}(freePols{i}(1:nNsbPols{i})) = rnaPols.nonSpecificallyBoundValue;
                 rnaPols.positionStrands{i}(freePols{i}(1:nNsbPols{i}), :) = posStrnds{i};
@@ -914,9 +927,9 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 
                 %temporarily release RNA polymerase from old position strands
                 releasedProteins{i} = ...
-                    this.releaseProteinFromSites(i, posStrnds{i}, false, this.enzymeIndexs_rnaPolymerase1, true, true) + ...
-                    this.releaseProteinFromSites(i, posStrnds{i}, false, this.enzymeIndexs_rnaPolymerase2, true, true);
-                if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase1) + releasedProteins{i}(this.enzymeIndexs_rnaPolymerase2), numel(actPols{i}))
+                    this.releaseProteinFromSites(i, posStrnds{i}, false, this.enzymeIndexs_rnaPolymerase2, true, true) + ...
+                    this.releaseProteinFromSites(i, posStrnds{i}, false, this.enzymeIndexs_rnaPolymerase3, true, true);
+                if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase2) + releasedProteins{i}(this.enzymeIndexs_rnaPolymerase3), numel(actPols{i}))
                     %throw(MException('Transcription:error', 'Unable to unbind protein'));
 					warning('Unable to unbind protein');
                 end
@@ -947,7 +960,7 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                         elngMax{i}(idxs{i}(order{i})) = min(...
                             elngMax{i}(idxs{i}(order{i})), ...
                             abs(diff([posStrnds{i}(idxs{i}(order{i}), 1); posStrnds{i}(idxs{i}(order{i}(1)), 1) + c.sequenceLen(i)]) - ...
-                            this.enzymeDNAFootprints(this.enzymeIndexs_rnaPolymerase1)));
+                            this.enzymeDNAFootprints(this.enzymeIndexs_rnaPolymerase2)));
 						A = find(elngMax{i} == 0);
 						for j = 1:length(A)	
 							elngMax{i}(A(j)) = 50;	
@@ -956,7 +969,7 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                         elngMax{i}(idxs{i}(order{i})) = min(...
                             elngMax{i}(idxs{i}(order{i})), ...
                             abs(diff([posStrnds{i}(idxs{i}(order{i}(end)), 1) - c.sequenceLen(i); posStrnds{i}(idxs{i}(order{i}), 1)]) - ...
-                            this.enzymeDNAFootprints(this.enzymeIndexs_rnaPolymerase1)));
+                            this.enzymeDNAFootprints(this.enzymeIndexs_rnaPolymerase2)));
 						B = find(elngMax{i} == 0);
 						for j = 1:length(B)	
 							elngMax{i}(B(j)) = 50;	
@@ -967,8 +980,8 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 %elongation limits by RNA-polymerase DNA interactions (Note: independent of other RNA polymerases)
                 [~, ~, ~, tmp_elngMax{i}] = c.isRegionAccessible(i, ...
                     posStrnds{i}, (elngMax{i} + 1) .* tuDirs{i}(iTUs{i}), ...
-                    [], this.enzymeGlobalIndexs(this.enzymeIndexs_rnaPolymerase1), true, [], true, false);
-				
+                    [], this.enzymeGlobalIndexs(this.enzymeIndexs_rnaPolymerase2), true, [], true, false);
+				%keyboard
 				if ~all(tmp_elngMax{i})
                     %throw(MException('Transcription:error', 'Unable to bind proteins'));
 					warning('Unable to bind proteins');
@@ -1006,8 +1019,8 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                 initPols{i} = rnaPols.states{i}(actPols{i}) == rnaPols.activelyTranscribingValue;
                 
 				if ...
-                        ~all(this.bindProteinToChromosome(i, rnaPols.positionStrands{i}(actPols{i}(~initPols{i}), :), this.enzymeIndexs_rnaPolymerase1)) || ...
-                        ~all(this.bindProteinToChromosome(i, rnaPols.positionStrands{i}(actPols{i}( initPols{i}), :), this.enzymeIndexs_rnaPolymerase2))
+                        ~all(this.bindProteinToChromosome(i, rnaPols.positionStrands{i}(actPols{i}(~initPols{i}), :), this.enzymeIndexs_rnaPolymerase2)) || ...
+                        ~all(this.bindProteinToChromosome(i, rnaPols.positionStrands{i}(actPols{i}( initPols{i}), :), this.enzymeIndexs_rnaPolymerase3))
                     %throw(MException('Transcription:error', 'Unable to bind proteins'));
 					warning('Unable to bind proteins');
                 end
@@ -1034,8 +1047,8 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
                     end
                     
                     %release proteins from chromsome
-                    releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(trmPols{i}, :), false, this.enzymeIndexs_rnaPolymerase1, true, true);
-                    if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase1), numel(trmPols{i}))
+                    releasedProteins{i} = this.releaseProteinFromSites(i, rnaPols.positionStrands{i}(trmPols{i}, :), false, this.enzymeIndexs_rnaPolymerase2, true, true);
+                    if ~isequal(releasedProteins{i}(this.enzymeIndexs_rnaPolymerase2), numel(trmPols{i}))
                         %throw(MException('Transcription:error', 'Unable to unbind protein'));
 						warning('Unable to unbind protein');
                     end
@@ -1065,10 +1078,10 @@ classdef Transcription < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.
             %% store enzyme state
             this.enzymes(this.enzymeIndexs_transcriptionFactors) = nFreTfs;
             this.boundEnzymes(this.enzymeIndexs_transcriptionFactors) = nBndTFs;
-            this.enzymes(this.enzymeIndexs_rnaPolymerase1) = nFrePols;
-            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase1) = nBndPols;
-            this.enzymes(this.enzymeIndexs_rnaPolymerase2) = nFreHols;
-            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2) = nBndHols;
+            this.enzymes(this.enzymeIndexs_rnaPolymerase2) = nFrePols;
+            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase2) = nBndPols;
+            this.enzymes(this.enzymeIndexs_rnaPolymerase3) = nFreHols;
+            this.boundEnzymes(this.enzymeIndexs_rnaPolymerase3) = nBndHols;
 		end
     end
     

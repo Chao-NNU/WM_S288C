@@ -568,7 +568,7 @@ classdef Replication < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmme.ce
             minEnzExp(this.enzymeIndexs_ssb8mer) = 2 * ceil(ssDNALen / ssbFtpt);
             
             %account for timing of replication
-            minEnzExp = minEnzExp / exp(log(1.111) * constants.states.Time.replicationInitiationDuration / constants.states.Time.cellCycleLength);
+            minEnzExp = minEnzExp / exp(log(2) * constants.states.Time.replicationInitiationDuration / constants.states.Time.cellCycleLength);
         end
         
         %initialization: simulation initialize state method initializes 1

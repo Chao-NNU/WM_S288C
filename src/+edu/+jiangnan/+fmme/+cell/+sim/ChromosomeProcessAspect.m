@@ -81,14 +81,14 @@ classdef ChromosomeProcessAspect < handle
 
             %% find accessible regions
 			tf = ismembc(enzymeIndex, this.enzymeMonomerLocalIndexs);
-			%keyboard
+			
             [rgnPosStrnds, rgnLens] = c.getAccessibleRegions(i, ...
                 this.enzymeGlobalIndexs(enzymeIndex( tf, 1), 1), ...
                 this.enzymeGlobalIndexs(enzymeIndex(~tf, 1), 1));
-			%keyboard
+			
             [rgnPosStrnds, rgnLens] = c.intersectRegions(i,...
                 rgnPosStrnds, rgnLens, positionsStrands, lengths);
-			%keyboard
+			
             %% compute probability of binding each region			
 			rgnProbs = calcRegionWeightsFun(rgnLens);
 			
@@ -465,19 +465,19 @@ classdef ChromosomeProcessAspect < handle
                 this.chromosome.setRegionProteinUnbound(i, positionsStrands, 1, ...
                 this.enzymeMonomerGlobalIndexs, this.enzymeComplexGlobalIndexs, ...
                 bothStrands, bothStrands, suspendExternalStateUpdating, false);
-            
+            %keyboard
             if any(releasedMonomers)
                 this.boundEnzymes(this.enzymeMonomerLocalIndexs) = this.boundEnzymes(this.enzymeMonomerLocalIndexs) - releasedMonomers;
                 this.enzymes(this.enzymeMonomerLocalIndexs)      = this.enzymes(this.enzymeMonomerLocalIndexs)      + releasedMonomers;
                 releasedProteins(this.enzymeMonomerLocalIndexs)  = releasedMonomers;
             end
-            
+            %keyboard
             if any(releasedComplexs)
                 this.boundEnzymes(this.enzymeComplexLocalIndexs) = this.boundEnzymes(this.enzymeComplexLocalIndexs) - releasedComplexs;
                 this.enzymes(this.enzymeComplexLocalIndexs)      = this.enzymes(this.enzymeComplexLocalIndexs)      + releasedComplexs;
                 releasedProteins(this.enzymeComplexLocalIndexs)  = releasedComplexs;
             end
-            
+            %keyboard
             %side effects
             if numel(sideEffects) > 0
                 if numel(this.simulationStateSideEffects) == 0

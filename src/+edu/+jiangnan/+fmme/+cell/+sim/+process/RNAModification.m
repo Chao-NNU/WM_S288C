@@ -96,16 +96,48 @@ classdef RNAModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
     %IDs, names, and local indices
     properties
         substrateIndexs_amet                             %index   within substrates of amet
+		substrateIndexs_nadph							 %index   within substrates of nadph
+		substrateIndexs_nadp							 %index   within substrates of nadp
 		substrateIndexs_accoa                            %index   within substrates of accoa
+		substrateIndexs_coa								 %index   within substrates of coa
+		substrateIndexs_nh3								 %index   within substrates of nh3
+		substrateIndexs_adn								 %index   within substrates of adn	
+		%substrateIndexs_hco3                             %index   within substrates of hco3
 		substrateIndexs_co2                              %index   within substrates of co2
+		substrateIndexs_ins								 %index   within substrates of ins	
+		substrateIndexs_ahcys							 %index   within substrates of ahcys
 		substrateIndexs_dmpp							 %index   within substrates of dmpp	
+		%substrateIndexs_fthf5                           %index   within substrates of 5-fthf
+        %substrateIndexs_cys                              %index   within substrates of cysteine
+        %substrateIndexs_gly                             %index   within substrates of glycine
+        %substrateIndexs_lys                             %index   within substrates of lysine
 		substrateIndexs_thr								 %index   within substrates of thr	
+		%substrateIndexs_atp                              %index   within substrates of ATP
         substrateIndexs_water                            %index   within substrates of water
-		substrateIndexs_adn                              %index   within substrates of adn
-		substrateIndexs_nadph                            %index   within substrates of nadph
-		substrateIndexs_h                                %index   within substrates of h
+        substrateIndexs_hydrogen                         %index   within substrates of hydrogen
+		substrateIndexs_ppi                              %index   within substrates of ppi
+		substrateIndexs_pi								 %index   within substrates of pi
+		substrateIndexs_psiurimp                         %index   within substrates of psiurimp
+		substrateIndexs_m1gmp							 %index   within substrates of m1gmp
+		substrateIndexs_m2gmp                            %index   within substrates of m2gmp
+		substrateIndexs_m7gmp                            %index   within substrates of m7gmp
         substrateIndexs_nmp                              %indices within substrates of NMPs
         substrateIndexs_modifiedNMP                      %indices within substrates of modified NMPs
+		%{
+        enzymeIndexs_rRNA16SDimethyladenosineTransferase %index within enzymes of   MG_463_MONOMER       rRNA 16S dimethyladenosine transferase
+        enzymeIndexs_rRNA16SMethyltransferaseGidB        %index within enzymes of   MG_380_MONOMER       rRNA 16S methyltransferase GidB
+        enzymeIndexs_rRNA23SMethyltransferaseI           %index within enzymes of   MG_252_DIMER         rRNA 23S methyltransferase I
+        enzymeIndexs_rRNA23SMethyltransferaseII          %index within enzymes of   MG_346_DIMER         rRNA 23S methyltransferase II
+        enzymeIndexs_rRNA23SPseudouridineSynthaseI       %index within enzymes of   MG_209_MONOMER       rRNA 23S pseudouridine synthase I
+        enzymeIndexs_rRNA23SPseudouridineSynthaseII      %index within enzymes of   MG_370_MONOMER       rRNA 23S pseudouridine synthase II
+        enzymeIndexs_tRNAGuanineN1Methyltransferase      %index within enzymes of   MG_445_DIMER         tRNA guanine-N1-methyltransferase
+        enzymeIndexs_tRNAGuanineN7Methyltransferase      %index within enzymes of   MG_347_DIMER         tRNA guanine-N7-methyltransferase
+        enzymeIndexs_tRNALysidineSynthetase              %index within enzymes of   MG_084_TETRAMER      tRNA lysidine synthetase
+        enzymeIndexs_tRNAPseudouridineSynthase           %index within enzymes of   MG_182_DIMER         tRNA pseudouridine synthase
+        enzymeIndexs_tRNAUracil2Sulfurtransferase        %index within enzymes of   MG_295_MONOMER       tRNA uracil-2-sulfurtransferase
+        enzymeIndexs_tRNAUracil4Sulfurtransferase        %index within enzymes of   MG_372_DIMER         tRNA uracil-4-sulfurtransferase
+        enzymeIndexs_tRNAUracil5Carboxymethylaminomethyl %index within enzymes of   MG_008_379_TETRAMER  tRNA uracil-5-carboxymethylaminomethyl
+		%}
 		
 		enzymeIndexs_rRNA18SGuaninemethyltransferase	         %index within enzymes of   YCR047C_MONOMER		 rRNA 18S methyltransferase	BUD23
 		enzymeIndexs_rRNA18SHistoneglutaminemethyltransferase	 %index within enzymes of   YDL014W_MONOMER		 rRNA 18S methyltransferase	NOP1
@@ -179,20 +211,56 @@ classdef RNAModification < edu.jiangnan.fmme.cell.sim.ReactionProcess
 
             %metabolites indices
             this.substrateIndexs_amet        = this.substrateIndexs({'AMET'});
-			this.substrateIndexs_accoa       = this.substrateIndexs({'ACCOA'});
-			this.substrateIndexs_co2         = this.substrateIndexs({'CO2'});
-			this.substrateIndexs_dmpp        = this.substrateIndexs({'DMPP'});
-			this.substrateIndexs_thr         = this.substrateIndexs({'THR_L'});
-            this.substrateIndexs_water       = this.substrateIndexs({'H2O'});
-			this.substrateIndexs_adn         = this.substrateIndexs({'ADN'});
 			this.substrateIndexs_nadph       = this.substrateIndexs({'NADPH'});
-			this.substrateIndexs_h           = this.substrateIndexs({'H'});
+			this.substrateIndexs_nadp        = this.substrateIndexs({'NADP'});
+			this.substrateIndexs_accoa       = this.substrateIndexs({'ACCOA'});
+			this.substrateIndexs_coa         = this.substrateIndexs({'COA'});
+			this.substrateIndexs_nh3         = this.substrateIndexs({'NH3'});
+			this.substrateIndexs_adn         = this.substrateIndexs({'ADN'});
+			%this.substrateIndexs_hco3        = this.substrateIndexs({'HCO3'});
+			this.substrateIndexs_co2         = this.substrateIndexs({'CO2'});
+			this.substrateIndexs_ins         = this.substrateIndexs({'INS'});
+			this.substrateIndexs_ahcys       = this.substrateIndexs({'AHCYS'});
+			this.substrateIndexs_dmpp        = this.substrateIndexs({'DMPP'});
+			
+            %this.substrateIndexs_fthf5       = this.substrateIndexs({'5FTHF'});
+            %this.substrateIndexs_cys         = this.substrateIndexs({'CYS_L'});
+            %this.substrateIndexs_gly         = this.substrateIndexs({'GLY_L'});
+            %this.substrateIndexs_lys         = this.substrateIndexs({'LYS_L'});
+			this.substrateIndexs_thr         = this.substrateIndexs({'THR_L'});
+			
+            %this.substrateIndexs_atp         = this.substrateIndexs({'ATP'});
+            this.substrateIndexs_water       = this.substrateIndexs({'H2O'});
+            this.substrateIndexs_hydrogen    = this.substrateIndexs({'H'});
+			this.substrateIndexs_ppi         = this.substrateIndexs({'PPI'});
+			this.substrateIndexs_pi          = this.substrateIndexs({'PI'});
+			this.substrateIndexs_psiurimp    = this.substrateIndexs({'PSIURIMP'});
+			this.substrateIndexs_m1gmp       = this.substrateIndexs({'M1GMP'});
+			this.substrateIndexs_m2gmp       = this.substrateIndexs({'M2GMP'});
+			this.substrateIndexs_m7gmp       = this.substrateIndexs({'M7GMP'});
+			
 			
             this.substrateIndexs_nmp         = this.substrateIndexs({'AMP'; 'CMP'; 'GMP'; 'UMP'});
             this.substrateIndexs_modifiedNMP = this.substrateMetaboliteLocalIndexs(...
                 strcmp({knowledgeBase.metabolites(this.substrateMetaboliteGlobalIndexs).category}, ...
                 'modified ribonucleotide monophosphate'));
 
+            %enzyme indices
+			%{
+            this.enzymeIndexs_rRNA16SDimethyladenosineTransferase = this.enzymeIndexs({'MG_463_MONOMER'});      %dimethyladenosine transferase
+            this.enzymeIndexs_rRNA16SMethyltransferaseGidB        = this.enzymeIndexs({'MG_380_MONOMER'});      %methyltransferase GidB
+            this.enzymeIndexs_rRNA23SMethyltransferaseI           = this.enzymeIndexs({'MG_252_DIMER'});        %23S rRNA methyltransferase; G2251
+            this.enzymeIndexs_rRNA23SMethyltransferaseII          = this.enzymeIndexs({'MG_346_DIMER'});        %23S rRNA methyltransferase; U2552
+            this.enzymeIndexs_rRNA23SPseudouridineSynthaseI       = this.enzymeIndexs({'MG_209_MONOMER'});      %23S rRNA pseudouridine synthase; U955, U2504, U2580
+            this.enzymeIndexs_rRNA23SPseudouridineSynthaseII      = this.enzymeIndexs({'MG_370_MONOMER'});      %23S rRNA pseudouridine synthase; U1911, U1915, U1917
+            this.enzymeIndexs_tRNAGuanineN1Methyltransferase      = this.enzymeIndexs({'MG_445_DIMER'});        %tRNA (guanine-N1)-methyltransferase
+            this.enzymeIndexs_tRNAGuanineN7Methyltransferase      = this.enzymeIndexs({'MG_347_DIMER'});        %tRNA (guanine-N(7)-)-methyltransferase
+            this.enzymeIndexs_tRNALysidineSynthetase              = this.enzymeIndexs({'MG_084_TETRAMER'});     %tRNA(Ile)-lysidine synthetase
+            this.enzymeIndexs_tRNAPseudouridineSynthase           = this.enzymeIndexs({'MG_182_DIMER'});        %tRNA pseudouridine synthase A
+            this.enzymeIndexs_tRNAUracil2Sulfurtransferase        = this.enzymeIndexs({'MG_295_MONOMER'});      %tRNA U34 sulfurtransferase
+            this.enzymeIndexs_tRNAUracil4Sulfurtransferase        = this.enzymeIndexs({'MG_372_DIMER'});        %thiamine biosynthesis/tRNA modification protein ThiI
+            this.enzymeIndexs_tRNAUracil5Carboxymethylaminomethyl = this.enzymeIndexs({'MG_008_379_TETRAMER'}); %tRNA uridine 5-carboxymethylaminomethyl modification enzyme
+			%}			
 			this.enzymeIndexs_rRNA18SGuaninemethyltransferase               = this.enzymeIndexs({'YCR047C_MONOMER'});
 			this.enzymeIndexs_rRNA18SHistoneglutaminemethyltransferase      = this.enzymeIndexs({'YDL014W_MONOMER'});
 			this.enzymeIndexs_rRNA18Cytosineacetyltransferase               = this.enzymeIndexs({'YNL132W_MONOMER'});

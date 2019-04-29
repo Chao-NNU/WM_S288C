@@ -290,7 +290,7 @@ classdef FitConstants < handle
                 geom.calculateWidth(mass.cellInitialDryWeight / (1 - mass.fractionWetWeight) / geom.density), ...
                 ring.filamentLengthInNm);
 			
-            this.ftsZCnt = ceil(4.00 / exp(log(1.111) * (1 - time.cytokinesisDuration / time.cellCycleLength)) * ...
+            this.ftsZCnt = ceil(4.00 / exp(log(2) * (1 - time.cytokinesisDuration / time.cellCycleLength)) * ...
                 numEdges * ring.numFtsZSubunitsPerFilament);
         end
         
@@ -343,11 +343,11 @@ classdef FitConstants < handle
                 case 'heuristic', paramVec = this.fitHeuristically(paramVec);
                 otherwise,        throw(MException('FitConstants:error', 'unknown method %s', this.method));
             end
-			
+			keyboard
             %apply fitted constants to simulation
             this.applyParameterVectorToSimulation(paramVec);
 			B = paramVec
-            
+            keyboard
             %reset seeds
             sim.applyOptions('seed', seed);
             sim.seedRandStream();
@@ -433,7 +433,7 @@ classdef FitConstants < handle
             %% match expression, decay rates
             rnaExp = (r.nascentRNAMatureRNAComposition * ...
                 ComputationUtil.invertCompositionMatrix(r.nascentRNAMatureRNAComposition) * ...
-                (rnaExp .* (log(1.111) / t.cellCycleLength + rnaDecayRates))) ./ (log(1.111) / t.cellCycleLength + rnaDecayRates);
+                (rnaExp .* (log(2) / t.cellCycleLength + rnaDecayRates))) ./ (log(2) / t.cellCycleLength + rnaDecayRates);
 			
             %% construct parameter vector
             paramVec = this.constructParameterVector(...
@@ -654,7 +654,7 @@ classdef FitConstants < handle
             ceq = [
                 (rnaWts - rnaWtFracs * rnaMWs') * rnaExp
                 (rnaBaseCounts' - nmpComp * rnaLens') * rnaExp
-                (monAACounts' - aaComp * monLens') * ((matureRNAGeneComp(g.mRNAIndexs, :) * rnaExp) ./ (log(1.111) / t.cellCycleLength + monDecayRates))
+                (monAACounts' - aaComp * monLens') * ((matureRNAGeneComp(g.mRNAIndexs, :) * rnaExp) ./ (log(2) / t.cellCycleLength + monDecayRates))
                 ];
             
             %equality constraints gradient
@@ -662,7 +662,7 @@ classdef FitConstants < handle
                 gradientCeqRNAExp = [
                     (rnaWts - rnaWtFracs * rnaMWs')
                     (rnaBaseCounts' - nmpComp * rnaLens')
-                    (monAACounts' - aaComp * monLens') * (matureRNAGeneComp(g.mRNAIndexs, :) ./ repmat(log(1.111) / t.cellCycleLength + monDecayRates, 1, this.nRNAs))
+                    (monAACounts' - aaComp * monLens') * (matureRNAGeneComp(g.mRNAIndexs, :) ./ repmat(log(2) / t.cellCycleLength + monDecayRates, 1, this.nRNAs))
                     ]';
                 
                 gradientCeqNMPComp = [
@@ -674,7 +674,7 @@ classdef FitConstants < handle
                 gradientCeqAAComp = [
                     zeros(this.nRNAWtFracs, this.nAAs)
                     zeros(this.nNMPs, this.nAAs)
-                    -eye(this.nAAs) * (monLens' * ((matureRNAGeneComp(g.mRNAIndexs, :) * rnaExp) ./ (log(1.111) / t.cellCycleLength + monDecayRates)))
+                    -eye(this.nAAs) * (monLens' * ((matureRNAGeneComp(g.mRNAIndexs, :) * rnaExp) ./ (log(2) / t.cellCycleLength + monDecayRates)))
                     ]';
                 
                 gradientCeqRNADecayRates = [
@@ -738,9 +738,9 @@ classdef FitConstants < handle
             for i = 1:this.nAAs
                 tempHessian = zeros(size(hessian));
                 tempHessian(this.rnaExpIdxs, this.aaIdxs(i)) = -(r.matureRNAGeneComposition(g.mRNAIndexs, :) ...
-                    ./ repmat(log(1.111) / t.cellCycleLength + monDecayRates, 1, this.nRNAs))' * monLens;
+                    ./ repmat(log(2) / t.cellCycleLength + monDecayRates, 1, this.nRNAs))' * monLens;
                 tempHessian(this.aaIdxs(i), this.rnaExpIdxs) = -(r.matureRNAGeneComposition(g.mRNAIndexs, :) ...
-                    ./ repmat(log(1.111) / t.cellCycleLength + monDecayRates, 1, this.nRNAs))' * monLens;
+                    ./ repmat(log(2) / t.cellCycleLength + monDecayRates, 1, this.nRNAs))' * monLens;
                 
                 hessian = hessian + lambda.eqnonlin(i + this.nRNAWtFracs + this.nNMPs) * tempHessian;
             end
@@ -785,21 +785,21 @@ classdef FitConstants < handle
 			
             rnaExp = (r.nascentRNAMatureRNAComposition * ...
                 ComputationUtil.invertCompositionMatrix(r.nascentRNAMatureRNAComposition) * ...
-                (rnaExp .* (log(1.111) / t.cellCycleLength + rnaDecayRates))) ./ (log(1.111) / t.cellCycleLength + rnaDecayRates);
+                (rnaExp .* (log(2) / t.cellCycleLength + rnaDecayRates))) ./ (log(2) / t.cellCycleLength + rnaDecayRates);
 			
             %2. match gene expression, weight fractions
             rnaCnt = zeros(size(r.matureIndexs));
-		
+			
             rnaCnt(r.matureMRNAIndexs) = ...
                 rnaExp(r.matureMRNAIndexs) * ...
                 mass.cellInitialDryWeight * mass.initialFractionNTPsInRNAs * mass.dryWeightFractionRNA * ...
                 rnaWtFracs(r.mRNAWeightFractionIndexs) / (rnaMWs(r.matureMRNAIndexs)' * rnaExp(r.matureMRNAIndexs));
-			
+				
             rnaCnt(r.matureRRNAIndexs) = ...
                 rnaExp(r.matureRRNAIndexs) * ...
                 mass.cellInitialDryWeight * mass.initialFractionNTPsInRNAs * mass.dryWeightFractionRNA * ...
                 sum(rnaWtFracs(r.rRNAWeightFractionIndexs)) / (rnaMWs(r.matureRRNAIndexs)' * rnaExp(r.matureRRNAIndexs));
-			
+				
             rnaCnt(r.matureSRNAIndexs) = ...
                 rnaExp(r.matureSRNAIndexs) * ...
                 mass.cellInitialDryWeight * mass.initialFractionNTPsInRNAs * mass.dryWeightFractionRNA * ...
@@ -809,20 +809,20 @@ classdef FitConstants < handle
                 rnaExp(r.matureTRNAIndexs) * ...
                 mass.cellInitialDryWeight * mass.initialFractionNTPsInRNAs * mass.dryWeightFractionRNA * ...
                 rnaWtFracs(r.tRNAWeightFractionIndexs) / (rnaMWs(r.matureTRNAIndexs)' * rnaExp(r.matureTRNAIndexs));
-			
+				
             monCnt = (r.matureRNAGeneComposition(g.mRNAIndexs, r.matureMRNAIndexs) * rnaCnt(r.matureMRNAIndexs)) ./ ...
-                (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
-			
+                (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
             monCnt = mass.cellInitialDryWeight * mass.initialFractionAAsInMonomers * mass.dryWeightFractionProtein * monCnt / (monMWs' * monCnt);
 			
             %3. Find gene expression, RNA decay rates, RNA weight fractions,
             %   nmp composition, aa composition which  satisfy gene expression lower bounds
             for i = 1:this.maxIter
+				i
                 %print status
                 if this.verbosity > 0
                     fprintf('Heuristic Iter: %d ...', i);
                 end
-               
+                
                 %transcription unit expression bounds
                 rnaExp = rnaCnt / sum(rnaCnt);
 				
@@ -897,16 +897,16 @@ classdef FitConstants < handle
                         end
                     end
                 end
-              
+                
                 %monomers
                 adjMinMonCnt = (r.matureRNAGeneComposition(g.mRNAIndexs, r.matureMRNAIndexs) * ...
                     max(matureRNAGeneComposition .* ...
-                    repmat(minMonCnt .* (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs)), 1, numel(r.matureMRNAIndexs)) , [], 1)') ./ ...
-                    (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
+                    repmat(minMonCnt .* (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs)), 1, numel(r.matureMRNAIndexs)) , [], 1)') ./ ...
+                    (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
                 adjMaxMonCnt = (r.matureRNAGeneComposition(g.mRNAIndexs, r.matureMRNAIndexs) * ...
                     min(matureRNAGeneComposition .* ...
-                    repmat(maxMonCnt .* (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs)), 1, numel(r.matureMRNAIndexs)), [], 1)') ./ ...
-                    (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
+                    repmat(maxMonCnt .* (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs)), 1, numel(r.matureMRNAIndexs)), [], 1)') ./ ...
+                    (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
                 adjMaxMonCnt = max(adjMinMonCnt, adjMaxMonCnt);
                 
                 if any(adjMinMonCnt > adjMaxMonCnt) && any(adjMinMonCnt ./ minMonCnt < 1 - this.tolerance) && any(adjMaxMonCnt ./ maxMonCnt > 1 + this.tolerance)
@@ -930,11 +930,11 @@ classdef FitConstants < handle
                 
                 %mRNA
                 mrnaExp = ComputationUtil.invertCompositionMatrix(r.matureRNAGeneComposition(g.mRNAIndexs, r.matureMRNAIndexs)) * ...
-                    (monCnt .* (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs)));
+                    (monCnt .* (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs)));
                 rnaCnt(r.matureMRNAIndexs) = mrnaExp * ...
                     mass.cellInitialDryWeight * mass.initialFractionNTPsInRNAs * mass.dryWeightFractionRNA * ...
                     rnaWtFracs(r.mRNAWeightFractionIndexs) / (rnaMWs(r.matureMRNAIndexs)' * mrnaExp);
-				
+					
                 %rRNA
                 if any(minRNACnt(r.matureRRNAIndexs) > rnaCnt(r.matureRRNAIndexs))
                     throw(MException('FitConstants:error', 'Minimum rRNA expression greater than rRNA weight fraction'));
@@ -943,13 +943,13 @@ classdef FitConstants < handle
                 %s/tRNA
                 %TODO: handle maxRNACnt
                 minMatureSRNAProd = minRNACnt(r.matureSRNAIndexs) .* ...
-                    (log(1.111) / t.cellCycleLength + rnaDecayRates(r.matureSRNAIndexs));
+                    (log(2) / t.cellCycleLength + rnaDecayRates(r.matureSRNAIndexs));
 					
                 minMatureSRNACnt = ...
                     (r.nascentRNAMatureRNAComposition(r.matureSRNAIndexs, :) * ...
                     (max(r.nascentRNAMatureRNAComposition(r.matureSRNAIndexs, :) .* ...
                     minMatureSRNAProd(:, ones(size(r.nascentRNAMatureRNAComposition, 2),1)), [], 1))') ./ ...
-                    (log(1.111) / t.cellCycleLength + rnaDecayRates(r.matureSRNAIndexs));
+                    (log(2) / t.cellCycleLength + rnaDecayRates(r.matureSRNAIndexs));
 					
                 matureSRNACnt = rnaCnt(r.matureSRNAIndexs);
 				
@@ -963,13 +963,13 @@ classdef FitConstants < handle
                 rnaCnt(r.matureSRNAIndexs) = matureSRNACnt;
 
                 minMatureTRNAProd = minRNACnt(r.matureTRNAIndexs) .* ...
-                    (log(1.111) / t.cellCycleLength + rnaDecayRates(r.matureTRNAIndexs));
+                    (log(2) / t.cellCycleLength + rnaDecayRates(r.matureTRNAIndexs));
 					
                 minMatureTRNACnt = ...
                     (r.nascentRNAMatureRNAComposition(r.matureTRNAIndexs, :) * ...
                     (max(r.nascentRNAMatureRNAComposition(r.matureTRNAIndexs, :) .* ...
                     minMatureTRNAProd(:, ones(size(r.nascentRNAMatureRNAComposition, 2),1)), [], 1))') ./ ...
-                    (log(1.111) / t.cellCycleLength + rnaDecayRates(r.matureTRNAIndexs));
+                    (log(2) / t.cellCycleLength + rnaDecayRates(r.matureTRNAIndexs));
                 matureTRNACnt = rnaCnt(r.matureTRNAIndexs);
 				
                 if mass.cellInitialDryWeight * mass.initialFractionNTPsInRNAs * mass.dryWeightFractionRNA * rnaWtFracs(r.tRNAWeightFractionIndexs) < minMatureTRNACnt' * rnaMWs(r.matureTRNAIndexs)
@@ -995,8 +995,7 @@ classdef FitConstants < handle
                     biomassComposition, biomassProduction, byproducts, unaccountedEnergyConsumption));
 					
                 monExp = (r.matureRNAGeneComposition(g.mRNAIndexs, r.matureMRNAIndexs) * mrnaExp) ./ ...
-                    (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
-					
+                    (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
                 monCnt = monExp * mass.cellInitialDryWeight * mass.initialFractionAAsInMonomers * mass.dryWeightFractionProtein / (monExp' * monMWs);
                 				
                 if any(totMons ./ adjMaxMonCnt > 1 + this.tolerance) || any(totMons ./ adjMinMonCnt < 1 - this.tolerance)
@@ -1068,7 +1067,7 @@ classdef FitConstants < handle
 			
             initialGrowthFilterWidth = mr.initialGrowthFilterWidth;
             mr.initialGrowthFilterWidth = Inf;
-			
+			keyboard
             sim.initializeState();
             mr.initialGrowthFilterWidth = initialGrowthFilterWidth;
 			
@@ -1194,31 +1193,29 @@ classdef FitConstants < handle
             %integrated state
             states = struct;
             states.rnas0               = freeRnas;
-            states.rnas                = freeRnas * t.cellCycleLength / log(1.111);
+            states.rnas                = freeRnas * t.cellCycleLength / log(2);
             states.rnaDecays           = rnaDecays;
-            states.rnaDecays0          = rnaDecays * log(1.111) / t.cellCycleLength;
+            states.rnaDecays0          = rnaDecays * log(2) / t.cellCycleLength;
             states.rnaProductions      = freeRnas + rnaInCpxs + rnaDecays;
-            states.rnaProductions0     = (freeRnas + rnaInCpxs) * log(1.111) / t.cellCycleLength + (freeRnas .* rnaDecayRates);
+            states.rnaProductions0     = (freeRnas + rnaInCpxs) * log(2) / t.cellCycleLength + (freeRnas .* rnaDecayRates);
             states.rnaProductions0(setdiff(1:end, r.matureMRNAIndexs)) = ...
                 states.rnaProductions0(setdiff(1:end, r.matureMRNAIndexs)) + ...
                 pcComp(setdiff(1:end, g.mRNAIndexs), :) * (freeCpxs .* pc.decayRates(pc.matureIndexs));
-				
             states.monomers0           = freeMons;
-			
-            states.monomers            = freeMons * t.cellCycleLength / log(1.111);
+            states.monomers            = freeMons * t.cellCycleLength / log(2);
             states.monomerDecays       = monDecays;
-            states.monomerDecays0      = monDecays * log(1.111) / t.cellCycleLength;
+            states.monomerDecays0      = monDecays * log(2) / t.cellCycleLength;
             states.monomerProductions  = freeMons + monInCpxs + monDecays;
-            states.monomerProductions0 = (freeMons + monInCpxs) * log(1.111) / t.cellCycleLength + (freeMons .* pm.decayRates(pm.matureIndexs));
+            states.monomerProductions0 = (freeMons + monInCpxs) * log(2) / t.cellCycleLength + (freeMons .* pm.decayRates(pm.matureIndexs));
             states.monomerProductions0 = ...
                 states.monomerProductions0 + ...
                 pcComp(g.mRNAIndexs, :) * (freeCpxs .* pc.decayRates(pc.matureIndexs));
             states.complexs0           = freeCpxs;
-            states.complexs            = freeCpxs * t.cellCycleLength / log(1.111);
+            states.complexs            = freeCpxs * t.cellCycleLength / log(2);
             states.complexDecays       = cpxDecays;
-            states.complexDecays0      = cpxDecays * log(1.111) / t.cellCycleLength;
+            states.complexDecays0      = cpxDecays * log(2) / t.cellCycleLength;
             states.complexProductions  = freeCpxs + cpxDecays;
-            states.complexProductions0 = freeCpxs * log(1.111) / t.cellCycleLength + (freeCpxs .* pc.decayRates(pc.matureIndexs));
+            states.complexProductions0 = freeCpxs * log(2) / t.cellCycleLength + (freeCpxs .* pc.decayRates(pc.matureIndexs));
             
             %processes
             for i = 1:length(sim.processes)
@@ -1359,11 +1356,9 @@ classdef FitConstants < handle
                 ((r.baseCounts(r.matureIndexs, m.nmpIndexs)' * rnaExp)' * m.molecularWeights(m.ntpIndexs) / ConstantUtil.nAvogadro);
             
             monExp = (r.matureRNAGeneComposition(g.mRNAIndexs, :) * rnaExp) ./ ...
-                (log(1.111) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
-			
+                (log(2) / t.cellCycleLength + pm.decayRates(pm.matureIndexs));
             totMons = mass.initialFractionAAsInMonomers * mass.dryWeightFractionProtein * mass.cellInitialDryWeight * ...
                 monExp / (monExp' * pm.molecularWeights(pm.matureIndexs) / ConstantUtil.nAvogadro);
-				
             freeAAs = (1 - mass.initialFractionAAsInMonomers) * mass.dryWeightFractionProtein * mass.cellInitialDryWeight * ...
                 pm.baseCounts(pm.matureIndexs, m.aminoAcidIndexs)' * monExp / ...
                 ((pm.baseCounts(pm.matureIndexs, m.aminoAcidIndexs)' * monExp)' * m.molecularWeights(m.aminoAcidIndexs) / ConstantUtil.nAvogadro);
@@ -1425,9 +1420,10 @@ classdef FitConstants < handle
 			
             assert(all(totRnas - rnaInCpxs > -1e-8));
             freeRnas = max(0, totRnas - rnaInCpxs);
+            
             monInCpxs = pcComp(g.mRNAIndexs, :) * totCpxs;
-			
 			assert(all(totMons - monInCpxs > -1e-8));
+			
             freeMons = max(0, totMons - monInCpxs);
             freeCpxs = totCpxs;
             
@@ -1444,12 +1440,12 @@ classdef FitConstants < handle
             totCpxs = f * totCpxs;
             
             %decays
-            cpxDecays = freeCpxs .* pc.decayRates(pc.matureIndexs) * t.cellCycleLength / log(1.111);
-            rnaDecays = freeRnas .* rnaDecayRates * t.cellCycleLength / log(1.111);
+            cpxDecays = freeCpxs .* pc.decayRates(pc.matureIndexs) * t.cellCycleLength / log(2);
+            rnaDecays = freeRnas .* rnaDecayRates * t.cellCycleLength / log(2);
             rnaDecays(setdiff(1:end, r.matureMRNAIndexs)) = ...
                 rnaDecays(setdiff(1:end, r.matureMRNAIndexs)) + ...
                 pcComp(setdiff(1:end, g.mRNAIndexs), :) * cpxDecays;
-            monDecays = freeMons .* pm.decayRates(pm.matureIndexs) * t.cellCycleLength / log(1.111) + ...
+            monDecays = freeMons .* pm.decayRates(pm.matureIndexs) * t.cellCycleLength / log(2) + ...
                 pcComp(g.mRNAIndexs, :) * cpxDecays;
         end
         
@@ -1584,7 +1580,7 @@ classdef FitConstants < handle
             %decay rates, and average across genes in each transcription unit
             
 			transcriptionUnitBindingProbabilities = ...
-                invNascentRNAMatureRNAComp * (rnaExp .* (log(1.111) / time.cellCycleLength + rnaDecayRates));
+                invNascentRNAMatureRNAComp * (rnaExp .* (log(2) / time.cellCycleLength + rnaDecayRates));
 				
 			for i = 1:16
 			t.transcriptionUnitBindingProbabilities{i} = transcriptionUnitBindingProbabilities([c.genome(i).transcriptionUnits.idx]);
@@ -1631,11 +1627,10 @@ classdef FitConstants < handle
             m.byproducts         = byproducts;
 			
             met.formulateFBA(biomassProduction - byproducts, unaccountedEnergyConsumption);
-			
+
             %calculate RNA polymerase state transition probabilities
             [freeRnas, ~, freeCpxs, rnaInCpxs, ~, ~, ~, totCpxs] = this.calcMacromolecularCounts(paramVec);
-			
-            rnaProds = (freeRnas + rnaInCpxs) * log(1.111) / time.cellCycleLength + (freeRnas .* rnaDecayRates);
+            rnaProds = (freeRnas + rnaInCpxs) * log(2) / time.cellCycleLength + (freeRnas .* rnaDecayRates);
             rnaProds(setdiff(1:end, r.matureMRNAIndexs)) = ...
                 rnaProds(setdiff(1:end, r.matureMRNAIndexs)) + ...
                 sum(pc.proteinComplexComposition(setdiff(1:end, g.mRNAIndexs), :, :), 3) * (freeCpxs .* pc.decayRates(pc.matureIndexs));

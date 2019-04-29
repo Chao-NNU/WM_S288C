@@ -236,12 +236,12 @@ classdef Rna < edu.jiangnan.fmme.cell.sim.MoleculeCountState
         
         %decay rates of RNAs (moleculeces/s)
         function value = get.geneDecayRates(this)
-            value = log(1.111) ./ this.geneHalfLives;
+            value = log(2) ./ this.geneHalfLives;
         end
         
         %experimental decay rates
         function value = get.expectedGeneDecayRates(this)
-            value = log(1.111) ./ this.expectedGeneHalfLives;
+            value = log(2) ./ this.expectedGeneHalfLives;
         end
         
         %RNA weight fractions

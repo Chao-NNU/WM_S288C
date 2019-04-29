@@ -320,7 +320,7 @@ classdef DNASupercoiling < edu.jiangnan.fmme.cell.sim.Process & edu.jiangnan.fmm
             %Gyrase
             minEnzExp(this.enzymeIndexs_gyrase) = ...
                 sum(nRxn / t.replicationDuration / this.gyraseActivityRate / ...
-                exp(log(1.111) * t.replicationInitiationDuration / t.cellCycleLength));
+                exp(log(2) * t.replicationInitiationDuration / t.cellCycleLength));
         end
 
         %initialization:

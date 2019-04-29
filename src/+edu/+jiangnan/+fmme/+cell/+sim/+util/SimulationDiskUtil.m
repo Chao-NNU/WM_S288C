@@ -294,7 +294,7 @@ classdef SimulationDiskUtil
         end
         
         function value = getBaseDir()
-            value = '/home/fmme/GSMM/wholecelldata/s288c_test/output/runSimulation';
+            value = '/home/fmme/GSMM/wholecelldata/s288c/output/runSimulation';
         end
         
         function value = getSimulationIndex(simDirAbs)
