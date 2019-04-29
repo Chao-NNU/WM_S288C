@@ -1,7 +1,7 @@
 % User guide
 
 %% Lesson 1: generate the knowledgeBase data from MySQL Database
-% go into the root directory of whole-cell toolbox
+%go into the root directory of whole-cell toolbox
 setWarnings();
 setPath();
 install%follow the instructions on screen
